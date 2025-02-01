@@ -1,0 +1,18 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Document API",
+    "description": "swagger documentation for client",
+    "contact": {
+      "name": "Anujin",
+      "email": "anujinaa1205@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "host": "192.168.1.92:2000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {}
+}
