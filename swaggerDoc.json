@@ -2,17 +2,955 @@
   "swagger": "2.0",
   "info": {
     "title": "Document API",
-    "description": "swagger documentation for client",
+    "description": "swagger kick box admin",
     "contact": {
       "name": "Anujin",
       "email": "anujinaa1205@gmail.com"
     },
     "version": "1.0.0"
   },
-  "host": "192.168.1.92:2000",
+  "host": "192.168.1.92:9001",
   "basePath": "/",
   "schemes": [
     "http"
   ],
-  "paths": {}
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login",
+        "description": "Login with phone number and password",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Login data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "phoneNo": {
+                  "type": "string",
+                  "example": "94288008"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/auth/refresh_token": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Refresh Token",
+        "description": "Refresh token",
+        "parameters": [
+          {
+            "name": "refreshToken",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "refreshToken": {
+                  "type": "string",
+                  "example": "refreshToken"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/type/create": {
+      "post": {
+        "tags": [
+          "Type"
+        ],
+        "summary": "Create Type",
+        "description": "Create type",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Type data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "name"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "description"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/type/get": {
+      "get": {
+        "tags": [
+          "Type"
+        ],
+        "summary": "Get Type List",
+        "description": "Get type list",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/type/update": {
+      "put": {
+        "tags": [
+          "Type"
+        ],
+        "summary": "Update Type",
+        "description": "Update type",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Type data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "_id"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "name"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "description"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/type/delete": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/club/create": {
+      "post": {
+        "tags": [
+          "Club"
+        ],
+        "summary": "Create Club",
+        "description": "Create club",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Club data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "name"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "description"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "address"
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "phone"
+                },
+                "coach": {
+                  "type": "string",
+                  "example": "coach"
+                },
+                "logo": {
+                  "type": "string",
+                  "example": "logo"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/club/get": {
+      "get": {
+        "tags": [
+          "Club"
+        ],
+        "summary": "Get Club List",
+        "description": "Get club list",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/club/update": {
+      "put": {
+        "tags": [
+          "Club"
+        ],
+        "summary": "Update Club",
+        "description": "Update club",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Club data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "club_id"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "name"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "description"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "address"
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "phone"
+                },
+                "coach": {
+                  "type": "string",
+                  "example": "coach"
+                },
+                "logo": {
+                  "type": "string",
+                  "example": "logo"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/image/upload": {
+      "post": {
+        "tags": [
+          "Image"
+        ],
+        "summary": "Upload image",
+        "description": "Upload image",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "required": true,
+            "type": "file",
+            "description": "Image file"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/admin/create": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Create Admin",
+        "description": "Create admin account",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Admin data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "anujin"
+                },
+                "phoneNo": {
+                  "type": "string",
+                  "example": "94288008"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/admin/get": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get Admin List",
+        "description": "Get admin list",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/admin/update": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update Admin",
+        "description": "Update admin account",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Admin data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "60f7c7b4c1a1a6e8c8a1f9c5"
+                },
+                "phoneNo": {
+                  "type": "string",
+                  "example": "94288008"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/category/create": {
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Create Category",
+        "description": "Create category",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Category data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "typeId": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Өсвөр нас /8-9/ кг"
+                },
+                "sex": {
+                  "type": "string",
+                  "example": "male/female/both"
+                },
+                "age": {
+                  "type": "string",
+                  "example": "8-10"
+                },
+                "weight": {
+                  "type": "string",
+                  "example": "24"
+                },
+                "height": {
+                  "type": "string",
+                  "example": "160"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/category/get": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Get Category List",
+        "description": "Get category list",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "page": 1,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "typeId",
+            "typeId": "60f4f2c4a4c6b80015f6f5a9",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/category/update": {
+      "put": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Update Category",
+        "description": "Update category",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Category data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Өсвөр нас /8-9/ кг"
+                },
+                "sex": {
+                  "type": "string",
+                  "example": "male"
+                },
+                "age": {
+                  "type": "string",
+                  "example": "8-10"
+                },
+                "weight": {
+                  "type": "string",
+                  "example": "24"
+                },
+                "height": {
+                  "type": "string",
+                  "example": "160"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/competition/create": {
+      "post": {
+        "tags": [
+          "Competition"
+        ],
+        "summary": "Create Competition",
+        "description": "Create competition",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Competition data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "typeId": {
+                  "type": "string",
+                  "example": "type _id"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "name"
+                },
+                "categories": {
+                  "type": "array",
+                  "example": [
+                    "_id",
+                    "_id"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "startDate": {
+                  "type": "string",
+                  "example": "YYYY-MM-DD HH:mm:ss"
+                },
+                "endDate": {
+                  "type": "string",
+                  "example": "YYYY-MM-DD HH:mm:ss"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "description"
+                },
+                "registrationStartDate": {
+                  "type": "string",
+                  "example": "YYYY-MM-DD HH:mm:ss"
+                },
+                "registrationDeadline": {
+                  "type": "string",
+                  "example": "YYYY-MM-DD HH:mm:ss"
+                },
+                "charge": {
+                  "type": "number",
+                  "example": 80000
+                },
+                "chargeDeadline": {
+                  "type": "string",
+                  "example": "YYYY-MM-DD HH:mm:ss"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "address"
+                },
+                "banner": {
+                  "type": "string",
+                  "example": "banner"
+                },
+                "organizer": {
+                  "type": "string",
+                  "example": "zohion baiguulj baigaa gazar"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/competition/get": {
+      "get": {
+        "tags": [
+          "Competition"
+        ],
+        "summary": "Get Competition List",
+        "description": "Get competition list",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/competition/update": {
+      "put": {
+        "tags": [
+          "Competition"
+        ],
+        "summary": "Update Competition",
+        "description": "Update competition",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Competition data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "competition_id"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "name"
+                },
+                "categories": {
+                  "type": "array",
+                  "example": [
+                    "_id",
+                    "_id"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "startDate": {
+                  "type": "string",
+                  "example": "YYYY-MM-DD HH:mm:ss"
+                },
+                "endDate": {
+                  "type": "string",
+                  "example": "YYYY-MM-DD HH:mm:ss"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "description"
+                },
+                "registrationStartDate": {
+                  "type": "string",
+                  "example": "YYYY-MM-DD HH:mm:ss"
+                },
+                "registrationDeadline": {
+                  "type": "string",
+                  "example": "YYYY-MM-DD HH:mm:ss"
+                },
+                "charge": {
+                  "type": "number",
+                  "example": 80000
+                },
+                "chargeDeadline": {
+                  "type": "string",
+                  "example": "YYYY-MM-DD HH:mm:ss"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "address"
+                },
+                "banner": {
+                  "type": "string",
+                  "example": "banner"
+                },
+                "organizer": {
+                  "type": "string",
+                  "example": "zohion baiguulj baigaa gazar"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  }
 }

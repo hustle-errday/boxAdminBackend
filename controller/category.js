@@ -1,0 +1,131 @@
+const asyncHandler = require("../middleware/asyncHandler");
+const myError = require("../utility/myError");
+const models = require("../models/models");
+const jwt = require("jsonwebtoken");
+
+// @todo busnii ungu nemeheer yaj oruulahiin boldoo rank nemeh yum bolowuu tegjaagaad
+
+exports.createCategory = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Category']
+  #swagger.summary = 'Create Category'
+  #swagger.description = 'Create category'
+  #swagger.parameters['obj'] = {
+    in: 'body',
+    description: 'Category data',
+    schema: { 
+      typeId: '60f4f2c4a4c6b80015f6f5a9',
+      name: 'Өсвөр нас /8-9/ кг',
+      sex: 'male/female/both',
+      age: '8-10',
+      weight: '24',
+      height: '160',
+    }
+  }
+  */
+
+  const { typeId, name, sex, age, weight, height } = req.body;
+  const token = jwt.decode(req.headers.authorization.split(" ")[1]);
+
+  const theType = await models.type.findById({ _id: typeId }).lean();
+  if (!theType) {
+    throw new myError("Төрөл олдсонгүй.", 400);
+  }
+
+  const checkDuplicate = await models.category.findOne({ name }).lean();
+  if (checkDuplicate) {
+    throw new myError("Нэр давхардсан байна.", 400);
+  }
+
+  const category = await models.category.create({
+    name,
+    sex,
+    age,
+    weight,
+    height,
+    createdBy: token._id,
+  });
+
+  res.status(200).json({
+    success: true,
+    data: category,
+  });
+});
+
+exports.getCategoryList = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Category']
+  #swagger.summary = 'Get Category List'
+  #swagger.description = 'Get category list'
+  #swagger.parameters['page'] = { page: 1 }
+  #swagger.parameters['typeId'] = { typeId: '60f4f2c4a4c6b80015f6f5a9' }
+  */
+
+  const { page, typeId } = req.query;
+  const PAGE_DATA = 20;
+  const skip = (parseInt(page) - 1) * PAGE_DATA;
+
+  const dataLength = await models.category.countDocuments({ typeId: typeId });
+
+  const categoryList = await models.category
+    .find({ typeId: typeId }, { __v: 0 })
+    .sort({ _id: -1 })
+    .skip(skip)
+    .limit(PAGE_DATA)
+    .lean();
+
+  res.status(200).json({
+    success: true,
+    data: categoryList,
+    dataLength: dataLength,
+    pageSize: PAGE_DATA,
+    currentPage: parseInt(page),
+  });
+});
+
+exports.updateCategory = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Category']
+  #swagger.summary = 'Update Category'
+  #swagger.description = 'Update category'
+  #swagger.parameters['obj'] = {
+    in: 'body',
+    description: 'Category data',
+    schema: { 
+      _id: '60f4f2c4a4c6b80015f6f5a9',
+      name: 'Өсвөр нас /8-9/ кг',
+      sex: 'male',
+      age: '8-10',
+      weight: '24',
+      height: '160',
+    }
+  }
+  */
+
+  const { _id, name, sex, age, weight, height } = req.body;
+
+  const checkDuplicate = await models.category.findOne({ name }).lean();
+  if (checkDuplicate) {
+    throw new myError("Нэр давхардсан байна.", 400);
+  }
+
+  const category = await models.category.findByIdAndUpdate(
+    _id,
+    { name, sex, age, weight, height },
+    { new: true }
+  );
+
+  res.status(200).json({
+    success: true,
+    data: category,
+  });
+});
+
+exports.deleteCategory = asyncHandler(async (req, res, next) => {
+  // deleted schema d hiihuu yariltsah
+
+  res.status(200).json({
+    success: true,
+    data: "not ready",
+  });
+});

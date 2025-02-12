@@ -9,7 +9,7 @@ const doc = {
       email: "anujinaa1205@gmail.com",
     },
   },
-  host: "192.168.1.92:6001",
+  host: "192.168.1.92:9001",
   schemes: ["http"],
 };
 
