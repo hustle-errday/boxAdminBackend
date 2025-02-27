@@ -14,7 +14,7 @@ exports.authenticateRequest = (req, res, next) => {
   if (!token) {
     return res.status(401).json({
       success: false,
-      error: "Алдаа гарлаа. Та дахин нэвтрэнэ үү.",
+      error: "Та эхлээд нэвтрэнэ үү.",
     });
   }
   try {
@@ -25,7 +25,7 @@ exports.authenticateRequest = (req, res, next) => {
   } catch (error) {
     return res.status(401).json({
       success: false,
-      error: "Алдаа гарлаа. Та дахин нэвтрэнэ үү.",
+      error: "Та эхлээд нэвтрэнэ үү.",
     });
   }
 };

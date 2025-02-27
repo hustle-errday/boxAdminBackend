@@ -2,38 +2,112 @@ const express = require("express");
 const router = express.Router();
 const {
   createClub,
+  setCoachToClub,
   getClubList,
   updateClub,
   deleteClub,
 } = require("../../controller/club");
-const { body } = require("express-validator");
+const { body, query } = require("express-validator");
 const requestDataValidation = require("../../middleware/requestDataValidation");
 
+router.route("/create").post(
+  /*
+  #swagger.tags = ['Club']
+  #swagger.summary = 'Create Club'
+  #swagger.description = 'Create club'
+  #swagger.parameters['obj'] = {
+    in: 'body',
+    description: 'Club data',
+    schema: { 
+      name: 'name',
+      description: 'description',
+      address: 'address',
+      phone: 'phone',
+      coach: ['coach', 'coach'],
+      logo: 'logo',
+    }
+  }
+  */
+  body("name").isString().notEmpty(),
+  body("description").isString().optional(),
+  body("address").isString().optional(),
+  body("phone").isString().optional(),
+  body("coach").isArray().optional(),
+  body("logo").isString().optional(),
+  requestDataValidation,
+  createClub
+);
+router.route("/set_coach").post(
+  /*
+  #swagger.tags = ['Club']
+  #swagger.summary = 'Set Coach To Club'
+  #swagger.description = 'Set coach to club'
+  #swagger.parameters['obj'] = {
+    in: 'body',
+    description: 'Club data',
+    schema: { 
+      clubId: 'clubId',
+      userId: 'userId',
+    }
+  }
+  */
+
+  body("clubId").isString().notEmpty(),
+  body("userId").isString().notEmpty(),
+  requestDataValidation,
+  setCoachToClub
+);
+router.route("/get").get(
+  /*
+      #swagger.tags = ['Club']
+      #swagger.summary = 'Get Club List'
+      #swagger.description = 'Get club list'
+      #swagger.parameters['page'] = {
+        in: 'query',
+        description: 'Page number',
+        required: true
+      }
+      #swagger.parameters['name'] = {
+        in: 'query',
+        description: 'Search by name',
+      }
+      */
+  query("page").isNumeric().notEmpty(),
+  query("name").isString().optional(),
+  requestDataValidation,
+  getClubList
+);
+router.route("/update").put(
+  /*
+  #swagger.tags = ['Club']
+  #swagger.summary = 'Update Club'
+  #swagger.description = 'Update club'
+  #swagger.parameters['obj'] = {
+    in: 'body',
+    description: 'Club data',
+    schema: { 
+      _id: 'club_id',
+      name: 'name',
+      description: 'description',
+      address: 'address',
+      phone: 'phone',
+      coach: ['coach', 'coach'],
+      logo: 'logo',
+    }
+  }
+  */
+  body("_id").isString().notEmpty(),
+  body("name").isString().notEmpty(),
+  body("description").isString().optional(),
+  body("address").isString().optional(),
+  body("phone").isString().optional(),
+  body("coach").isArray().optional(),
+  body("logo").isString().optional(),
+  requestDataValidation,
+  updateClub
+);
 router
-  .route("/create")
-  .post(
-    body("name").isString().notEmpty(),
-    body("description").isString().optional(),
-    body("address").isString().optional(),
-    body("phone").isString().optional(),
-    body("coach").isString().optional(),
-    body("logo").isString().optional(),
-    requestDataValidation,
-    createClub
-  );
-router.route("/get").get(getClubList);
-router
-  .route("/update")
-  .put(
-    body("_id").isString().notEmpty(),
-    body("name").isString().notEmpty(),
-    body("description").isString().optional(),
-    body("address").isString().optional(),
-    body("phone").isString().optional(),
-    body("coach").isString().optional(),
-    body("logo").isString().optional(),
-    requestDataValidation,
-    updateClub
-  );
+  .route("/delete")
+  .delete(body("_id").isString().notEmpty(), requestDataValidation, deleteClub);
 
 module.exports = router;

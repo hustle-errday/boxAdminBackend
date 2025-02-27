@@ -4,6 +4,7 @@ const {
   createCategory,
   getCategoryList,
   updateCategory,
+  deleteCategory,
 } = require("../../controller/category");
 const { body, query } = require("express-validator");
 const requestDataValidation = require("../../middleware/requestDataValidation");
@@ -23,7 +24,6 @@ router
 router
   .route("/get")
   .get(
-    query("page").isNumeric().notEmpty(),
     query("typeId").isMongoId().notEmpty(),
     requestDataValidation,
     getCategoryList
@@ -39,6 +39,13 @@ router
     body("height").optional(),
     requestDataValidation,
     updateCategory
+  );
+router
+  .route("/delete")
+  .delete(
+    body("_id").isMongoId().notEmpty(),
+    requestDataValidation,
+    deleteCategory
   );
 
 module.exports = router;

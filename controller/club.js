@@ -6,24 +6,6 @@ const jwt = require("jsonwebtoken");
 // @todo club uudiig temtseend oruulna admin aas
 
 exports.createClub = asyncHandler(async (req, res, next) => {
-  /*
-  #swagger.tags = ['Club']
-  #swagger.summary = 'Create Club'
-  #swagger.description = 'Create club'
-  #swagger.parameters['obj'] = {
-    in: 'body',
-    description: 'Club data',
-    schema: { 
-      name: 'name',
-      description: 'description',
-      address: 'address',
-      phone: 'phone',
-      coach: 'coach',
-      logo: 'logo',
-    }
-  }
-  */
-
   const { name, description, address, phone, coach, logo } = req.body;
   const token = jwt.decode(req.headers.authorization.split(" ")[1]);
 
@@ -48,44 +30,96 @@ exports.createClub = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.setCoachToClub = asyncHandler(async (req, res, next) => {
+  const { clubId, userId } = req.body;
+
+  const theClub = await models.club.findOne({ _id: clubId });
+  if (!theClub) {
+    throw new myError("Клубын мэдээлэл олдсонгүй.", 400);
+  }
+
+  const theUser = await models.user.findOne({ _id: userId }).lean();
+  if (!theUser) {
+    throw new myError("Хэрэглэгчийн мэдээлэл олдсонгүй.", 400);
+  }
+
+  // Check if user is already a coach in this club
+  if (theClub.coach.includes(userId)) {
+    throw new myError("Хэрэглэгч аль хэдийн уг клубт багшилж байна.", 400);
+  }
+
+  // Log if the user was previously part of another club
+  if (theUser.club) {
+    await models.clubLog.create({
+      club: theUser.club,
+      user: userId,
+      joinAs: "coach",
+      action: "leave",
+    });
+  }
+
+  // Add user to club as a coach
+  await models.club.updateOne(
+    { _id: clubId },
+    { $addToSet: { coach: userId } }
+  );
+
+  // Log the user's addition to the club
+  await models.clubLog.create({
+    club: clubId,
+    user: userId,
+    joinAs: "coach",
+    action: "join",
+  });
+
+  await models.user.updateOne({ _id: userId }, { club: clubId, role: "coach" });
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
 exports.getClubList = asyncHandler(async (req, res, next) => {
-  /*
-  #swagger.tags = ['Club']
-  #swagger.summary = 'Get Club List'
-  #swagger.description = 'Get club list'
-  */
+  const { page, name } = req.query;
+  const pageNumber = parseInt(page);
+  const PAGE_DATA = 20;
+
+  const skipDataLength = (pageNumber - 1) * PAGE_DATA;
+
+  const allClubs = await models.club
+    .find({ name: { $regex: name ?? "", $options: "si" } })
+    .countDocuments();
 
   const clubList = await models.club
-    .find({}, { __v: 0 })
+    .find({ name: { $regex: name ?? "", $options: "si" } }, { __v: 0 })
+    .populate("createdBy", "username")
+    .populate("coach", "firstName lastName")
     .sort({ _id: -1 })
+    .skip(skipDataLength)
+    .limit(PAGE_DATA)
     .lean();
+
+  clubList.forEach((club) => {
+    club.createdBy = club.createdBy.username;
+    club.coach
+      ? (club.coach = club.coach.map((c) => ({
+          _id: c._id,
+          name: `${c.firstName} ${c.lastName}`,
+          phoneNo: c.phoneNo,
+        })))
+      : [];
+  });
 
   res.status(200).json({
     success: true,
     data: clubList,
+    dataLength: allClubs,
+    pageSizes: PAGE_DATA,
+    currentPage: pageNumber,
   });
 });
 
 exports.updateClub = asyncHandler(async (req, res, next) => {
-  /*
-  #swagger.tags = ['Club']
-  #swagger.summary = 'Update Club'
-  #swagger.description = 'Update club'
-  #swagger.parameters['obj'] = {
-    in: 'body',
-    description: 'Club data',
-    schema: { 
-      _id: 'club_id',
-      name: 'name',
-      description: 'description',
-      address: 'address',
-      phone: 'phone',
-      coach: 'coach',
-      logo: 'logo',
-    }
-  }
-  */
-
   const { _id, name, description, address, phone, coach, logo } = req.body;
 
   const checkDuplicate = await models.club
@@ -95,7 +129,7 @@ exports.updateClub = asyncHandler(async (req, res, next) => {
     throw new myError("Нэр давхардсан байна.", 400);
   }
 
-  const club = await models.club.findOneAndUpdate(
+  await models.club.findOneAndUpdate(
     { _id: _id },
     {
       name,
@@ -104,9 +138,19 @@ exports.updateClub = asyncHandler(async (req, res, next) => {
       phone,
       coach,
       logo,
-    },
-    { new: true }
+    }
   );
+
+  const club = await models.club
+    .findOne({ _id: _id })
+    .populate("coach", "firstName lastName")
+    .lean();
+
+  club.coach = club.coach.map((c) => ({
+    _id: c._id,
+    firstName: c.firstName,
+    lastName: c.lastName,
+  }));
 
   res.status(200).json({
     success: true,

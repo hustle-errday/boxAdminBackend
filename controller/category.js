@@ -38,6 +38,7 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
   }
 
   const category = await models.category.create({
+    typeId,
     name,
     sex,
     age,
@@ -57,29 +58,19 @@ exports.getCategoryList = asyncHandler(async (req, res, next) => {
   #swagger.tags = ['Category']
   #swagger.summary = 'Get Category List'
   #swagger.description = 'Get category list'
-  #swagger.parameters['page'] = { page: 1 }
   #swagger.parameters['typeId'] = { typeId: '60f4f2c4a4c6b80015f6f5a9' }
   */
 
-  const { page, typeId } = req.query;
-  const PAGE_DATA = 20;
-  const skip = (parseInt(page) - 1) * PAGE_DATA;
-
-  const dataLength = await models.category.countDocuments({ typeId: typeId });
+  const { typeId } = req.query;
 
   const categoryList = await models.category
     .find({ typeId: typeId }, { __v: 0 })
     .sort({ _id: -1 })
-    .skip(skip)
-    .limit(PAGE_DATA)
     .lean();
 
   res.status(200).json({
     success: true,
     data: categoryList,
-    dataLength: dataLength,
-    pageSize: PAGE_DATA,
-    currentPage: parseInt(page),
   });
 });
 
@@ -104,7 +95,9 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 
   const { _id, name, sex, age, weight, height } = req.body;
 
-  const checkDuplicate = await models.category.findOne({ name }).lean();
+  const checkDuplicate = await models.category
+    .findOne({ _id: { $ne: _id }, name })
+    .lean();
   if (checkDuplicate) {
     throw new myError("Нэр давхардсан байна.", 400);
   }

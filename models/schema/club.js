@@ -23,8 +23,8 @@ const clubSchema = new mongoose.Schema({
     trim: true,
   },
   coach: {
-    type: mongoose.Schema.ObjectId,
-    ref: "coach",
+    type: [mongoose.Schema.ObjectId],
+    ref: "user",
   },
   logo: {
     type: String,
