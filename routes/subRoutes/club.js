@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   createClub,
   setCoachToClub,
+  removeCoachFromClub,
   getClubList,
   updateClub,
   deleteClub,
@@ -56,6 +57,27 @@ router.route("/set_coach").post(
   body("userId").isString().notEmpty(),
   requestDataValidation,
   setCoachToClub
+);
+router.route("/remove_coach").delete(
+  /*
+  #swagger.tags = ['Club']
+  #swagger.summary = 'Remove Coach From Club'
+  #swagger.description = 'Remove Coach From Club'
+  #swagger.parameters['body'] = {
+    in: 'body',
+    description: 'Remove Coach From Club',
+    required: true,
+    schema: {
+      clubId: '60f4f2c4a4c6b80015f6f5a9',
+      userId: '60f4f2c4a4c6b80015f6f5a9'
+    }
+  }
+  */
+
+  body("clubId").isString().notEmpty(),
+  body("userId").isString().notEmpty(),
+  requestDataValidation,
+  removeCoachFromClub
 );
 router.route("/get").get(
   /*

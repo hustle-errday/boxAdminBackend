@@ -58,6 +58,12 @@ const competitionSchema = new mongoose.Schema({
       ref: "category",
     },
   ],
+  referees: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+    },
+  ],
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "admin",

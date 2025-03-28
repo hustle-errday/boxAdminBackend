@@ -51,11 +51,18 @@ exports.setCoachToClub = asyncHandler(async (req, res, next) => {
   // Log if the user was previously part of another club
   if (theUser.club) {
     await models.clubLog.create({
-      club: theUser.club,
-      user: userId,
+      clubId: theUser.club,
+      userId: userId,
       joinAs: "coach",
       action: "leave",
     });
+
+    await models.club.updateOne(
+      { _id: theUser.club },
+      {
+        $pull: { coach: userId },
+      }
+    );
   }
 
   // Add user to club as a coach
@@ -66,8 +73,8 @@ exports.setCoachToClub = asyncHandler(async (req, res, next) => {
 
   // Log the user's addition to the club
   await models.clubLog.create({
-    club: clubId,
-    user: userId,
+    clubId: clubId,
+    userId: userId,
     joinAs: "coach",
     action: "join",
   });
@@ -76,6 +83,51 @@ exports.setCoachToClub = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
+  });
+});
+
+exports.removeCoachFromClub = asyncHandler(async (req, res, next) => {
+  const { clubId, userId } = req.body;
+
+  const theClub = await models.club.findOne({ _id: clubId });
+  if (!theClub) {
+    throw new myError("Клубын мэдээлэл олдсонгүй.", 400);
+  }
+
+  const theUser = await models.user.findOne({ _id: userId }).lean();
+  if (!theUser) {
+    throw new myError("Хэрэглэгчийн мэдээлэл олдсонгүй.", 400);
+  }
+
+  // check if user is not a coach in this club
+  if (!theClub.coach.includes(userId)) {
+    throw new myError("Хэрэглэгч энэ клубт хамаараагүй байна.", 400);
+  }
+
+  // log
+  await models.clubLog.create({
+    clubId: clubId,
+    userId: userId,
+    joinAs: "coach",
+    action: "leave",
+  });
+
+  // remove user from club as a coach
+  await models.club.updateOne(
+    {
+      _id: clubId,
+    },
+    {
+      $pull: { coach: userId },
+    }
+  );
+
+  // remove user from club as a coach
+  await models.user.updateOne({ _id: userId }, { club: null });
+
+  res.status(200).json({
+    success: true,
+    data: "Амжилттай.",
   });
 });
 

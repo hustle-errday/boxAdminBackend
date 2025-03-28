@@ -6,6 +6,8 @@ const {
   getCompetition,
   updateCompetition,
   deleteCompetition,
+  endCompetitions,
+  getCompetitionCategories,
 } = require("../../controller/competition");
 const { body, query } = require("express-validator");
 const requestDataValidation = require("../../middleware/requestDataValidation");
@@ -62,6 +64,20 @@ router
     body("_id").isMongoId().notEmpty(),
     requestDataValidation,
     deleteCompetition
+  );
+router
+  .route("/end")
+  .put(
+    body("competitionId").isMongoId().notEmpty(),
+    requestDataValidation,
+    endCompetitions
+  );
+router
+  .route("/categories")
+  .get(
+    query("competitionId").isMongoId().notEmpty(),
+    requestDataValidation,
+    getCompetitionCategories
   );
 
 module.exports = router;

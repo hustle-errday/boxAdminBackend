@@ -9,7 +9,7 @@
     },
     "version": "1.0.0"
   },
-  "host": "192.168.1.92:9001",
+  "host": "192.168.1.92:9005",
   "basePath": "/",
   "schemes": [
     "http"
@@ -22,6 +22,44 @@
         ],
         "summary": "Login",
         "description": "Login with phone number and password",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Login data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "phoneNo": {
+                  "type": "string",
+                  "example": "94288008"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/auth/referee_login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Referee Login",
+        "description": "Login with phone number and password for referee",
         "parameters": [
           {
             "name": "obj",
@@ -333,6 +371,52 @@
                 "userId": {
                   "type": "string",
                   "example": "userId"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/club/remove_coach": {
+      "delete": {
+        "tags": [
+          "Club"
+        ],
+        "summary": "Remove Coach From Club",
+        "description": "Remove Coach From Club",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Remove Coach From Club",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "clubId": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                },
+                "userId": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
                 }
               }
             }
@@ -757,6 +841,330 @@
                 "password": {
                   "type": "string",
                   "example": "password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/match/matching": {
+      "post": {
+        "tags": [
+          "Match"
+        ],
+        "summary": "Matching",
+        "description": "Matching",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Matching data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "competitionId": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/match/get": {
+      "get": {
+        "tags": [
+          "Match"
+        ],
+        "summary": "Get Matches",
+        "description": "Get Matches",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "competitionId",
+            "competitionId": "aaanhn",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/match/update": {
+      "put": {
+        "tags": [
+          "Match"
+        ],
+        "summary": "Update Match",
+        "description": "Update Match",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Match data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "competitionId": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                },
+                "matchId": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/referee/create": {
+      "post": {
+        "tags": [
+          "Referee"
+        ],
+        "summary": "Create Referee",
+        "description": "Create referee account",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Referee data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": {
+                  "type": "string",
+                  "example": "Jaagii"
+                },
+                "lastName": {
+                  "type": "string",
+                  "example": "Jawhlan"
+                },
+                "phoneNo": {
+                  "type": "string",
+                  "example": "89808962"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "qwer123@"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/referee/password": {
+      "post": {
+        "tags": [
+          "Referee"
+        ],
+        "summary": "Change Referee Password",
+        "description": "Change referee password",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Referee data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "phoneNo": {
+                  "type": "string",
+                  "example": "89808962"
+                },
+                "newPassword": {
+                  "type": "string",
+                  "example": "qwer123@"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/referee/list": {
+      "get": {
+        "tags": [
+          "Referee"
+        ],
+        "summary": "Get Referee List",
+        "description": "Get referee list",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "page": 1,
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/referee/put": {
+      "put": {
+        "tags": [
+          "Referee"
+        ],
+        "summary": "Put Referee in Competition",
+        "description": "Put referee in competition",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Referee data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "competitionId": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                },
+                "refereeId": {
+                  "type": "array",
+                  "example": [
+                    "60f4f2c4a4c6b80015f6f5a9",
+                    "60f4f2c4a4c6b80015f6f5a9"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -1256,6 +1664,89 @@
         }
       }
     },
+    "/api/competition/end": {
+      "put": {
+        "tags": [
+          "Competition"
+        ],
+        "summary": "End Competitions",
+        "description": "End competitions",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Competition data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "competitionId": {
+                  "type": "string",
+                  "example": "competition_id"
+                }
+              }
+            }
+          },
+          {
+            "name": "competitionId",
+            "competitionId": "60f4f2c4a4c6b80015f6f5a9",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/competition/categories": {
+      "get": {
+        "tags": [
+          "Competition"
+        ],
+        "summary": "Get Competition Categories",
+        "description": "Get competition categories",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "competitionId",
+            "competitionId": "60f4f2c4a4c6b80015f6f5a9",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/api/participant/get": {
       "get": {
         "tags": [
@@ -1433,6 +1924,54 @@
                 "chargePaid": {
                   "type": "string",
                   "example": "true"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/participant/reject": {
+      "post": {
+        "tags": [
+          "Participant"
+        ],
+        "summary": "Reject Participant",
+        "description": "Reject participant",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Participant data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "participant_id"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "reason for rejection"
                 }
               }
             }

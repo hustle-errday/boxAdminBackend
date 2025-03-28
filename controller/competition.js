@@ -4,8 +4,6 @@ const models = require("../models/models");
 const moment = require("moment-timezone");
 const jwt = require("jsonwebtoken");
 
-// @todo neg toglolt yawagdah hugatsaa awaad automataar guideg baij boloh l yum
-
 exports.createCompetition = asyncHandler(async (req, res, next) => {
   /*
   #swagger.tags = ['Competition']
@@ -193,6 +191,7 @@ exports.getCompetition = asyncHandler(async (req, res, next) => {
     .populate("categories", "name")
     .populate("typeId", "name")
     .populate("createdBy", "username")
+    .populate("referees", "firstName lastName")
     .lean();
   if (!competition) {
     throw new myError("Тэмцээн олдсонгүй.", 400);
@@ -203,6 +202,9 @@ exports.getCompetition = asyncHandler(async (req, res, next) => {
     name: item.name,
   }));
   competition.createdBy = competition.createdBy.username ?? "Систем";
+  competition.referees = competition.referees?.map(
+    (item) => item.firstName + " " + item.lastName
+  );
 
   res.status(200).json({
     success: true,
@@ -273,14 +275,22 @@ exports.updateCompetition = asyncHandler(async (req, res, next) => {
   }
 
   // check if endDate is greater than registrationDeadline using moment
-  if (moment(endDate).isBefore(registrationDeadline)) {
+  if (
+    endDate &&
+    registrationDeadline &&
+    moment(endDate).isBefore(registrationDeadline)
+  ) {
     throw new myError(
       "Тэмцээний дуусах болон бүртгэл хаагдах огноо зөрж байна.",
       400
     );
   }
   // check if chargeDeadline is greater than registrationDeadline using moment
-  if (moment(chargeDeadline).isBefore(registrationDeadline)) {
+  if (
+    chargeDeadline &&
+    registrationDeadline &&
+    !moment(chargeDeadline).isBefore(registrationDeadline)
+  ) {
     throw new myError(
       "Хураамж төлөх хугацаа бүртгэл хаагдах огнооноос өмнө байх ёстой.",
       400
@@ -319,5 +329,77 @@ exports.deleteCompetition = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: "not ready",
+  });
+});
+
+exports.endCompetitions = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Competition']
+  #swagger.summary = 'End Competitions'
+  #swagger.description = 'End competitions
+  #swagger.parameters['obj'] = {
+    in: 'body',
+    description: 'Competition data',
+    schema: { 
+      competitionId: 'competition_id'
+    }
+  }
+  */
+
+  const { competitionId } = req.body;
+
+  const now = moment().tz("Asia/Ulaanbaatar").format("YYYY-MM-DD HH:mm:ss");
+
+  const competition = await models.competition
+    .findById({ _id: competitionId })
+    .lean();
+  if (!competition) {
+    throw new myError("Тэмцээн олдсонгүй.", 400);
+  }
+
+  await models.competition.findByIdAndUpdate(competitionId, {
+    endDate: now,
+  });
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
+exports.getCompetitionCategories = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Competition']
+  #swagger.summary = 'Get Competition Categories'
+  #swagger.description = 'Get competition categories'
+  #swagger.parameters['competitionId'] = { competitionId: '60f4f2c4a4c6b80015f6f5a9' }
+  */
+
+  const { competitionId } = req.query;
+
+  const competition = await models.competition
+    .findById({ _id: competitionId })
+    .lean();
+  if (!competition) {
+    throw new myError("Тэмцээн олдсонгүй.", 400);
+  }
+
+  const categories = await models.category
+    .find({ _id: { $in: competition.categories } }, { __v: 0 })
+    .populate("typeId", "name")
+    .populate("createdBy", "username")
+    .lean();
+  if (categories.length !== competition.categories.length) {
+    throw new myError("Зарим ангилал олдсонгүй.", 400);
+  }
+
+  categories.forEach((item) => {
+    item.type = item.typeId.name;
+    item.createdBy = item.createdBy.username ?? "Систем";
+    delete item.typeId;
+  });
+
+  res.status(200).json({
+    success: true,
+    data: categories,
   });
 });

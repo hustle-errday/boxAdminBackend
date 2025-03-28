@@ -14,7 +14,7 @@ exports.getParticipantList = asyncHandler(async (req, res, next) => {
   #swagger.parameters['searchBy'] = { searchBy: 'name' }
   */
 
-  const { competitionId } = req.query;
+  const { competitionId, searchBy } = req.query;
 
   const participants = await models.participant
     .find(
@@ -46,10 +46,33 @@ exports.getParticipantList = asyncHandler(async (req, res, next) => {
     participants[i].userInfo = userInfo;
   }
 
-  if (participants.length === 0) {
-    throw new myError("Тэмцээнд бүртгүүлсэн тамирчид байхгүй байна.", 400);
+  // filter participants if searchBy is provided
+  if (searchBy) {
+    const filteredParticipants = participants.filter((participant) => {
+      const { firstName, lastName, phoneNo } = participant.userInfo || {};
+      return (
+        (firstName &&
+          firstName.toLowerCase().includes(searchBy.toLowerCase())) ||
+        (lastName && lastName.toLowerCase().includes(searchBy.toLowerCase())) ||
+        (phoneNo && phoneNo.includes(searchBy))
+      );
+    });
+
+    // if no participants match the filter, return an empty result
+    if (filteredParticipants.length === 0) {
+      return res.status(200).json({
+        success: true,
+        data: [],
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: filteredParticipants,
+    });
   }
 
+  // if no filter, return the full participant list
   res.status(200).json({
     success: true,
     data: participants,
@@ -207,4 +230,44 @@ exports.validateParticipant = asyncHandler(async (req, res, next) => {
       data: matchedCategory,
     });
   }
+});
+
+exports.rejectParticipant = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Participant']
+  #swagger.summary = 'Reject Participant'
+  #swagger.description = 'Reject participant'
+  #swagger.parameters['obj'] = {
+    in: 'body',
+    description: 'Participant data',
+    schema: { 
+      _id: 'participant_id',
+      description: 'reason for rejection'
+    }
+  }
+  */
+
+  const { _id, description } = req.body;
+
+  const participant = await models.participant.findOne({ _id }).lean();
+  if (!participant) {
+    throw new myError("Тамирчин олдсонгүй.", 400);
+  }
+
+  if (!description) {
+    await models.participant.updateOne(
+      { _id: _id },
+      { $set: { status: "rejected" } }
+    );
+  }
+  if (description) {
+    await models.participant.updateOne(
+      { _id: _id },
+      { $set: { status: "rejected", reason: description } }
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+  });
 });
