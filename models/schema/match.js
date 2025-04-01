@@ -14,11 +14,11 @@ const matchSchema = new mongoose.Schema({
   },
   playerOne: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "participant",
   },
   playerTwo: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "participant",
   },
   score: {
     type: Object,
@@ -26,7 +26,7 @@ const matchSchema = new mongoose.Schema({
   },
   winner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "participant",
   },
   round: {
     type: Number,

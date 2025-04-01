@@ -695,6 +695,137 @@
         }
       }
     },
+    "/api/fight/score": {
+      "post": {
+        "tags": [
+          "Fight"
+        ],
+        "summary": "Give score",
+        "description": "Give score",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Give score data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "matchId": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                },
+                "round": {
+                  "type": "number",
+                  "example": 1
+                },
+                "playerOne": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "60f4f2c4a4c6b80015f6f5a9"
+                    },
+                    "score": {
+                      "type": "string",
+                      "example": "10 or K.O"
+                    }
+                  }
+                },
+                "playerTwo": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "60f4f2c4a4c6b80015f6f5a9"
+                    },
+                    "score": {
+                      "type": "string",
+                      "example": "9 or 0"
+                    }
+                  }
+                },
+                "description": {
+                  "type": "array",
+                  "example": [
+                    "description",
+                    "description",
+                    "description"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/fight/ending": {
+      "post": {
+        "tags": [
+          "Fight"
+        ],
+        "summary": "End Match",
+        "description": "End Match",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "End Match data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "matchId": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/api/image/upload": {
       "post": {
         "tags": [
@@ -1168,6 +1299,111 @@
                 }
               }
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/referee/search": {
+      "get": {
+        "tags": [
+          "Referee"
+        ],
+        "summary": "Search Referee",
+        "description": "Search referee",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "search",
+            "search": "Jaagii",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/referee/competitions": {
+      "get": {
+        "tags": [
+          "Referee"
+        ],
+        "summary": "Get Competitions for Referee",
+        "description": "Get competitions for referee",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/referee/matches": {
+      "get": {
+        "tags": [
+          "Referee"
+        ],
+        "summary": "Get Matches for Referee",
+        "description": "Get matches for referee",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "competitionId",
+            "competitionId": "aaanhn",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "categoryId": "mmmhn",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {

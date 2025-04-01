@@ -21,8 +21,6 @@ exports.matching = asyncHandler(async (req, res, next) => {
 
   const { competitionId } = req.body;
 
-  // @todo temtseen ehlehed onoolt zaawal garsan bn
-
   // await models.match.deleteMany({});
   // await models.participant.updateMany(
   //   { competitionId: competitionId },
@@ -74,7 +72,7 @@ exports.matching = asyncHandler(async (req, res, next) => {
   for (let i = 0; i < Object.keys(participantsByCategory).length; i++) {
     const categoryId = Object.keys(participantsByCategory)[i];
     let participantIds = participantsByCategory[categoryId].map(
-      (participant) => participant.userId
+      (participant) => participant._id
     );
 
     // calculate the next power of 2
@@ -197,14 +195,43 @@ exports.getMatches = asyncHandler(async (req, res, next) => {
     const theMatches = await models.match
       .find({ competitionId, categoryId: theCategory._id })
       .populate("categoryId", "name")
-      .populate("playerOne", "firstName lastName imageUrl")
-      .populate("playerTwo", "firstName lastName imageUrl")
+      .populate({
+        path: "playerOne",
+        populate: {
+          path: "userId",
+          model: "user",
+        },
+      })
+      .populate({
+        path: "playerTwo",
+        populate: {
+          path: "userId",
+          model: "user",
+        },
+      })
       .sort({ round: 1, matchNumber: 1 })
       .lean();
 
     const maxRound = Math.max(...theMatches.map((match) => match.round));
 
     const formattedData = theMatches.reduce((acc, match) => {
+      match.playerOne = match.playerOne
+        ? {
+            _id: match.playerOne._id,
+            firstName: match.playerOne.userId.firstName,
+            lastName: match.playerOne.userId.lastName,
+            imageUrl: match.playerOne.userId.imageUrl ?? "",
+          }
+        : null;
+      match.playerTwo = match.playerTwo
+        ? {
+            _id: match.playerTwo._id,
+            firstName: match.playerTwo.userId.firstName,
+            lastName: match.playerTwo.userId.lastName,
+            imageUrl: match.playerTwo.userId.imageUrl ?? "",
+          }
+        : null;
+
       const round = match.round === maxRound ? "Final" : `Round ${match.round}`;
 
       let roundObj = acc.find((r) => r.round === round);
@@ -217,7 +244,7 @@ exports.getMatches = asyncHandler(async (req, res, next) => {
         _id: match._id,
         match: match.matchNumber.toString(),
         players: [match.playerOne, match.playerTwo],
-        // @todo score
+        score: match.score ?? "",
         winner: match.winner ?? "",
         matchDateTime: match.matchDateTime ?? "",
       });
@@ -252,6 +279,8 @@ exports.updateMatch = asyncHandler(async (req, res, next) => {
     }
   }
   */
+
+  // @todo
 
   const { competitionId } = req.body;
 

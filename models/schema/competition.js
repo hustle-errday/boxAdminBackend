@@ -64,6 +64,10 @@ const competitionSchema = new mongoose.Schema({
       ref: "user",
     },
   ],
+  isUnique: {
+    type: Boolean,
+    default: false,
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "admin",

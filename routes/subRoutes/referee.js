@@ -5,6 +5,9 @@ const {
   changeRefereePassword,
   getRefereeList,
   putRefereeInCompetition,
+  searchReferee,
+  getCompetitionsForReferee,
+  getMatchesForReferee,
 } = require("../../controller/referee");
 const requestDataValidation = require("../../middleware/requestDataValidation");
 const { body, query } = require("express-validator");
@@ -49,6 +52,18 @@ router
     body("competitionId").isString().notEmpty(),
     requestDataValidation,
     putRefereeInCompetition
+  );
+router
+  .route("/search")
+  .get(query("search").isString(), requestDataValidation, searchReferee);
+router.route("/competitions").get(getCompetitionsForReferee);
+router
+  .route("/matches")
+  .get(
+    query("competitionId").isMongoId(),
+    query("categoryId").isMongoId(),
+    requestDataValidation,
+    getMatchesForReferee
   );
 
 module.exports = router;

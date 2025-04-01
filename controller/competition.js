@@ -47,9 +47,7 @@ exports.createCompetition = asyncHandler(async (req, res, next) => {
   } = req.body;
   const token = jwt.decode(req.headers.authorization.split(" ")[1]);
 
-  //@todo add shuugch
-
-  // herwee + ees deesh angilal baiwal bolohgui, + iin daraa angilal nemwel bolohgui
+  // @todo herwee + ees deesh angilal baiwal bolohgui, + iin daraa angilal nemwel bolohgui
 
   const [checkType, checkDuplicate, checkCategory] = await Promise.all([
     models.type.findById(typeId).lean(),
@@ -401,5 +399,50 @@ exports.getCompetitionCategories = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: categories,
+  });
+});
+
+exports.makeCompetitionUnique = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Competition']
+  #swagger.summary = 'Make Competition Unique'  
+  #swagger.description = 'Make competition unique'
+  #swagger.parameters['competitionId'] = { 
+    in: 'body',
+    description: 'Competition data',
+    schema: {
+      competitionId: '60f4f2c4a4c6b80015f6f5a9', 
+      isUnique: true
+    }
+  }
+  */
+
+  const { competitionId, isUnique } = req.body;
+
+  const competition = await models.competition
+    .findById({ _id: competitionId })
+    .lean();
+  if (!competition) {
+    throw new myError("Тэмцээн олдсонгүй.", 400);
+  }
+
+  if (isUnique === true) {
+    const unique = await models.competition.findOne({ isUnique: true }).lean();
+    if (unique) {
+      throw new myError(
+        "Зөвхөн нэг тэмцээнийг нүүр хуудсанд байршуулах боломжтой.",
+        400
+      );
+    }
+  }
+  if (isUnique === false) {
+    await models.competition.updateOne(
+      { _id: competitionId },
+      { isUnique: false }
+    );
+  }
+
+  res.status(200).json({
+    success: true,
   });
 });
