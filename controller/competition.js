@@ -434,6 +434,11 @@ exports.makeCompetitionUnique = asyncHandler(async (req, res, next) => {
         400
       );
     }
+
+    await models.competition.updateOne(
+      { _id: competitionId },
+      { isUnique: true }
+    );
   }
   if (isUnique === false) {
     await models.competition.updateOne(

@@ -14,7 +14,7 @@ const connectDB = require("./config/db");
 const errorHandler = require("./middleware/error");
 const { authenticateRequest } = require("./middleware/validateRequest");
 
-dotenv.config({ path: "./config/config.env" });
+dotenv.config({ path: "./config/configProduction.env" });
 
 connectDB();
 
