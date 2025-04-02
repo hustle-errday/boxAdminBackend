@@ -19,8 +19,8 @@ dotenv.config({ path: "./config/configProduction.env" });
 connectDB();
 
 if (process.env.NODE_ENV === "production") {
-  const privatekey = fs.readFileSync("/etc/ssl/viot.mn/viot.key");
-  const certificate = fs.readFileSync("/etc/ssl/viot.mn/viot.crt");
+  const privatekey = fs.readFileSync("/etc/ssl/warfc/warfc.key");
+  const certificate = fs.readFileSync("/etc/ssl/warfc/warfc.crt");
   const credentials = { key: privatekey, cert: certificate };
 
   https.createServer(credentials, app).listen(process.env.PORT, () => {
