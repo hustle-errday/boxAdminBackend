@@ -14,7 +14,6 @@ const clubSchema = new mongoose.Schema({
   },
   address: {
     type: String,
-    required: true,
     trim: true,
   },
   phone: {
