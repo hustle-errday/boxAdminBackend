@@ -9,6 +9,7 @@ const {
   endCompetitions,
   getCompetitionCategories,
   makeCompetitionUnique,
+  getAllReferees,
 } = require("../../controller/competition");
 const { body, query } = require("express-validator");
 const requestDataValidation = require("../../middleware/requestDataValidation");
@@ -84,9 +85,16 @@ router
   .route("/unique")
   .put(
     body("competitionId").isMongoId().notEmpty(),
-    body("unique").isBoolean().notEmpty(),
+    body("isUnique").isBoolean().notEmpty(),
     requestDataValidation,
     makeCompetitionUnique
+  );
+router
+  .route("/referees")
+  .get(
+    query("competitionId").isString().notEmpty(),
+    requestDataValidation,
+    getAllReferees
   );
 
 module.exports = router;

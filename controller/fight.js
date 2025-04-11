@@ -60,7 +60,8 @@ exports.giveScore = asyncHandler(async (req, res, next) => {
   if (participants.length !== 2) {
     throw new myError("Тоглогч олдсонгүй.", 400);
   }
-  if (!match.competitionId.referees?.includes(token._id)) {
+  const referees = match.competitionId.referees?.map((ref) => ref.toString());
+  if (!referees.includes(token._id.toString())) {
     throw new myError("Тэмцээнд харьяалагдаагүй шүүгч байна.", 400);
   }
   if (

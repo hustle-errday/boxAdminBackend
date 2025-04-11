@@ -55,6 +55,39 @@ const matchCategory = async (categories, user) => {
   return matchedCategory ?? false;
 };
 
+const transformData = async (inputData) => {
+  const result = [];
+
+  inputData.forEach((item) => {
+    let genderGroup = result.find((g) => g.gender === item.sex);
+    if (!genderGroup) {
+      genderGroup = { gender: item.sex, data: [] };
+      result.push(genderGroup);
+    }
+
+    let ageGroup = genderGroup.data.find((a) => a.age === item.age);
+    if (!ageGroup) {
+      ageGroup = { age: item.age, data: [] };
+      genderGroup.data.push(ageGroup);
+    }
+
+    let weightGroup = ageGroup.data.find((w) => w.weight === item.weight);
+    if (!weightGroup) {
+      weightGroup = { weight: item.weight, data: [] };
+      ageGroup.data.push(weightGroup);
+    }
+
+    weightGroup.data.push({
+      _id: item._id,
+      name: item.name,
+      height: item.height,
+    });
+  });
+
+  return result;
+};
+
 module.exports = {
   matchCategory,
+  transformData,
 };

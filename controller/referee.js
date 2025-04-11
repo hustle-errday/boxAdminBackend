@@ -332,6 +332,19 @@ exports.getMatchesForReferee = asyncHandler(async (req, res, next) => {
           lastName: match.winner.userId.lastName,
         }
       : null;
+
+    if (match.score) {
+      Object.keys(match.score).forEach((key) => {
+        if (key.toString() == match.playerOne._id.toString()) {
+          match.score.playerOne = match.score[key];
+          delete match.score[key];
+        }
+        if (key.toString() == match.playerTwo._id.toString()) {
+          match.score.playerTwo = match.score[key];
+          delete match.score[key];
+        }
+      });
+    }
   });
 
   res.status(200).json({

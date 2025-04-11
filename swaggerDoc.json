@@ -1099,9 +1099,33 @@
                   "type": "string",
                   "example": "60f4f2c4a4c6b80015f6f5a9"
                 },
-                "matchId": {
+                "categoryId": {
                   "type": "string",
                   "example": "60f4f2c4a4c6b80015f6f5a9"
+                },
+                "matches": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "60f4f2c4a4c6b80015f6f5a9"
+                      },
+                      "match": {
+                        "type": "number",
+                        "example": 2
+                      },
+                      "playerOne": {
+                        "type": "string",
+                        "example": "60f4f2c4a4c6b80015f6f5a9"
+                      },
+                      "playerTwo": {
+                        "type": "string",
+                        "example": "60f4f2c4a4c6b80015f6f5a9"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -1502,6 +1526,42 @@
           {
             "name": "typeId",
             "typeId": "60f4f2c4a4c6b80015f6f5a9",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/category/more": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Get Category List By Category",
+        "description": "Get category list by category",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "competitionId",
+            "competitionId": "60f4f2c4a4c6b80015f6f5a9",
             "in": "query",
             "type": "string"
           }
@@ -1933,21 +1993,49 @@
           {
             "name": "competitionId",
             "competitionId": "60f4f2c4a4c6b80015f6f5a9",
-            "in": "body",
-            "description": "Competition data",
+            "in": "query",
+            "description": "competitionId",
             "schema": {
               "type": "object",
               "properties": {
-                "competitionId": {
+                "type": {
                   "type": "string",
-                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                  "example": "object"
                 },
-                "isUnique": {
-                  "type": "boolean",
-                  "example": true
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "competitionId": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "60f4f2c4a4c6b80015f6f5a9"
+                        }
+                      }
+                    },
+                    "isUnique": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "boolean"
+                        },
+                        "example": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  }
                 }
               }
-            }
+            },
+            "required": true
           }
         ],
         "responses": {
@@ -2029,6 +2117,43 @@
                 }
               }
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/competition/referees": {
+      "get": {
+        "tags": [
+          "Competition"
+        ],
+        "summary": "Get All Referees",
+        "description": "Get all referees",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "competitionId",
+            "in": "query",
+            "description": "competitionId",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {

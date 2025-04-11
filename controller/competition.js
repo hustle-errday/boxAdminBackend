@@ -451,3 +451,31 @@ exports.makeCompetitionUnique = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+exports.getAllReferees = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Competition']
+  #swagger.summary = 'Get All Referees'
+  #swagger.description = 'Get all referees'
+  #swagger.parameters['competitionId'] = {
+    in: 'query',
+    description: 'competitionId',
+    required: true
+  }
+  */
+
+  const { competitionId } = req.query;
+
+  const competition = await models.competition
+    .findOne({ _id: competitionId })
+    .populate("referees", "firstName lastName phoneNo role")
+    .lean();
+  if (!competition) {
+    throw new myError("Тэмцээн олдсонгүй.", 400);
+  }
+
+  res.status(200).json({
+    success: true,
+    data: competition.referees,
+  });
+});

@@ -2,6 +2,7 @@ const asyncHandler = require("../middleware/asyncHandler");
 const myError = require("../utility/myError");
 const models = require("../models/models");
 const jwt = require("jsonwebtoken");
+const { transformData } = require("../myFunctions/competitionHelper");
 
 // @todo busnii ungu nemeheer yaj oruulahiin boldoo rank nemeh yum bolowuu tegjaagaad
 
@@ -71,6 +72,43 @@ exports.getCategoryList = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: categoryList,
+  });
+});
+
+exports.getCategoryListByCategory = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Category']
+  #swagger.summary = 'Get Category List By Category'
+  #swagger.description = 'Get category list by category'
+  #swagger.parameters['competitionId'] = { competitionId: '60f4f2c4a4c6b80015f6f5a9' }
+  */
+
+  const { competitionId } = req.query;
+
+  const competition = await models.competition
+    .findById({ _id: competitionId })
+    .lean();
+  if (!competition) {
+    throw new myError("Тэмцээн олдсонгүй.", 400);
+  }
+
+  const data = [];
+  for (let i = 0; i < competition.categories.length; i++) {
+    const category = await models.category
+      .findById({ _id: competition.categories[i] })
+      .lean();
+    if (!category) {
+      throw new myError("Тэмцээн доторх ангилал олдсонгүй.", 400);
+    }
+
+    data.push(category);
+  }
+
+  const transformedData = await transformData(data);
+
+  res.status(200).json({
+    success: true,
+    data: transformedData,
   });
 });
 

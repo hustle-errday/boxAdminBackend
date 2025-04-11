@@ -185,7 +185,7 @@ exports.getMatches = asyncHandler(async (req, res, next) => {
 
   for (let i = 0; i < theCompetition.categories.length; i++) {
     const theCategory = await models.category
-      .findById(theCompetition.categories[i])
+      .findById({ _id: theCompetition.categories[i] }, { name: 1 })
       .lean();
 
     if (!theCategory) {
@@ -214,46 +214,79 @@ exports.getMatches = asyncHandler(async (req, res, next) => {
 
     const maxRound = Math.max(...theMatches.map((match) => match.round));
 
-    const formattedData = theMatches.reduce((acc, match) => {
-      match.playerOne = match.playerOne
-        ? {
-            _id: match.playerOne._id,
-            firstName: match.playerOne.userId.firstName,
-            lastName: match.playerOne.userId.lastName,
-            imageUrl: match.playerOne.userId.imageUrl ?? "",
-          }
-        : null;
-      match.playerTwo = match.playerTwo
-        ? {
-            _id: match.playerTwo._id,
-            firstName: match.playerTwo.userId.firstName,
-            lastName: match.playerTwo.userId.lastName,
-            imageUrl: match.playerTwo.userId.imageUrl ?? "",
-          }
-        : null;
+    const formattedData = await Promise.all(
+      theMatches.map(async (match) => {
+        const round =
+          match.round === maxRound ? "Final" : `Round ${match.round}`;
 
-      const round = match.round === maxRound ? "Final" : `Round ${match.round}`;
+        let playerOneClub = null;
+        let playerTwoClub = null;
 
-      let roundObj = acc.find((r) => r.round === round);
+        if (match.playerOne?.userId?.club) {
+          const theClub = await models.club
+            .findById({ _id: match.playerOne.userId.club })
+            .lean();
+          playerOneClub = theClub
+            ? { _id: theClub._id, name: theClub.name, logo: theClub.logo ?? "" }
+            : null;
+        }
+
+        if (match.playerTwo?.userId?.club) {
+          const theClub = await models.club
+            .findById({ _id: match.playerTwo.userId.club })
+            .lean();
+          playerTwoClub = theClub
+            ? { _id: theClub._id, name: theClub.name, logo: theClub.logo ?? "" }
+            : null;
+        }
+
+        const playerOne = match.playerOne
+          ? {
+              _id: match.playerOne._id,
+              firstName: match.playerOne.userId.firstName,
+              lastName: match.playerOne.userId.lastName,
+              imageUrl: match.playerOne.userId.imageUrl ?? "",
+              club: playerOneClub,
+            }
+          : null;
+
+        const playerTwo = match.playerTwo
+          ? {
+              _id: match.playerTwo._id,
+              firstName: match.playerTwo.userId.firstName,
+              lastName: match.playerTwo.userId.lastName,
+              imageUrl: match.playerTwo.userId.imageUrl ?? "",
+              club: playerTwoClub,
+            }
+          : null;
+
+        return {
+          round,
+          match: {
+            _id: match._id,
+            match: match.matchNumber.toString(),
+            players: [playerOne, playerTwo],
+            score: match.score ?? "",
+            winner: match.winner ?? "",
+            matchDateTime: match.matchDateTime ?? "",
+          },
+        };
+      })
+    );
+
+    const reduced = formattedData.reduce((acc, item) => {
+      let roundObj = acc.find((r) => r.round === item.round);
       if (!roundObj) {
-        roundObj = { round, matches: [] };
+        roundObj = { round: item.round, matches: [] };
         acc.push(roundObj);
       }
-
-      roundObj.matches.push({
-        _id: match._id,
-        match: match.matchNumber.toString(),
-        players: [match.playerOne, match.playerTwo],
-        score: match.score ?? "",
-        winner: match.winner ?? "",
-        matchDateTime: match.matchDateTime ?? "",
-      });
+      roundObj.matches.push(item.match);
       return acc;
     }, []);
 
     data.push({
-      category: theCategory.name,
-      data: formattedData,
+      category: { _id: theCategory._id, name: theCategory.name },
+      data: reduced,
     });
   }
 
@@ -274,15 +307,26 @@ exports.updateMatch = asyncHandler(async (req, res, next) => {
     required: true,
     schema: {
       competitionId: '60f4f2c4a4c6b80015f6f5a9',
-      matchId: '60f4f2c4a4c6b80015f6f5a9',
-      
+      categoryId: '60f4f2c4a4c6b80015f6f5a9',
+      matches: [
+        {
+          _id: '60f4f2c4a4c6b80015f6f5a9',
+          match: 1,
+          playerOne: '60f4f2c4a4c6b80015f6f5a9',
+          playerTwo: '60f4f2c4a4c6b80015f6f5a9'
+        },
+        {
+          _id: '60f4f2c4a4c6b80015f6f5a9',
+          match: 2,
+          playerOne: '60f4f2c4a4c6b80015f6f5a9',
+          playerTwo: '60f4f2c4a4c6b80015f6f5a9'
+        },
+      ]
     }
   }
   */
 
-  // @todo
-
-  const { competitionId } = req.body;
+  const { competitionId, categoryId, matches } = req.body;
 
   const now = moment.tz("Asia/Ulaanbaatar").format("YYYY-MM-DD HH:mm:ss");
 
@@ -297,13 +341,61 @@ exports.updateMatch = asyncHandler(async (req, res, next) => {
   }
 
   const matchCheck = await models.match
-    .findOne({ competitionId: competitionId })
+    .findOne({ competitionId: competitionId, categoryId: categoryId })
     .lean();
   if (!matchCheck) {
     throw new myError("Оноолт олдсонгүй", 400);
   }
 
+  for (let i = 0; i < matches.length; i++) {
+    if (!matches[i].playerOne && !matches[i].playerTwo) {
+      continue;
+    }
+    if (matches[i].playerOne && matches[i].playerTwo) {
+      const theParticipants = await models.participant
+        .find({
+          _id: { $in: [matches[i].playerOne, matches[i].playerTwo] },
+        })
+        .lean();
+
+      if (theParticipants.length !== 2) {
+        throw new myError("Оролцогч олдсонгүй", 400);
+      }
+    }
+    if (!matches[i].playerOne && matches[i].playerTwo) {
+      const theParticipants = await models.participant
+        .findOne({ _id: matches[i].playerTwo })
+        .lean();
+
+      if (!theParticipants) {
+        throw new myError("Оролцогч олдсонгүй", 400);
+      }
+    }
+    if (matches[i].playerOne && !matches[i].playerTwo) {
+      const theParticipants = await models.participant
+        .findOne({ _id: matches[i].playerOne })
+        .lean();
+
+      if (!theParticipants) {
+        throw new myError("Оролцогч олдсонгүй", 400);
+      }
+    }
+
+    const update = await models.match.updateOne(
+      { _id: matches[i]._id, matchNumber: matches[i].match },
+      {
+        playerOne: matches[i].playerOne,
+        playerTwo: matches[i].playerTwo,
+      },
+      { new: true }
+    );
+    if (!update) {
+      throw new myError("Оноолт олдсонгүй", 400);
+    }
+  }
+
   res.status(200).json({
     success: true,
+    data: "Оноолт амжилттай шинэчлэгдлээ.",
   });
 });

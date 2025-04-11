@@ -83,6 +83,7 @@ userSchema.methods.getAccessToken = function () {
       _id: this._id,
       role: this.role,
       phoneNo: this.phoneNo,
+      username: this.phoneNo,
     },
     process.env.JWT_SECRET,
     {
@@ -96,6 +97,7 @@ userSchema.methods.getRefreshToken = function () {
       _id: this._id,
       role: this.role,
       phoneNo: this.phoneNo,
+      username: this.phoneNo,
     },
     process.env.REFRESH_SECRET,
     {

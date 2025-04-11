@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   createCategory,
   getCategoryList,
+  getCategoryListByCategory,
   updateCategory,
   deleteCategory,
 } = require("../../controller/category");
@@ -14,9 +15,9 @@ router
   .post(
     body("typeId").isMongoId().notEmpty(),
     body("name").isString().notEmpty(),
-    body("sex").optional(),
-    body("age").optional(),
-    body("weight").optional(),
+    body("sex").notEmpty(),
+    body("age").notEmpty(),
+    body("weight").notEmpty(),
     body("height").optional(),
     requestDataValidation,
     createCategory
@@ -29,13 +30,20 @@ router
     getCategoryList
   );
 router
+  .route("/more")
+  .get(
+    query("competitionId").isMongoId().notEmpty(),
+    requestDataValidation,
+    getCategoryListByCategory
+  );
+router
   .route("/update")
   .put(
     body("_id").isMongoId().notEmpty(),
     body("name").isString().notEmpty(),
-    body("sex").optional(),
-    body("age").optional(),
-    body("weight").optional(),
+    body("sex").notEmpty(),
+    body("age").notEmpty(),
+    body("weight").notEmpty(),
     body("height").optional(),
     requestDataValidation,
     updateCategory
