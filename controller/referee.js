@@ -173,7 +173,7 @@ exports.putRefereeInCompetition = asyncHandler(async (req, res, next) => {
   if (referees.length !== refereeId.length) {
     throw new myError("Зарим шүүгч олдсонгүй.", 400);
   }
-  if (competition.referees.includes(refereeId)) {
+  if (competition.referees?.includes(refereeId)) {
     throw new myError("Шүүгч аль хэдийн тэмцээнд бүртгэгдсэн байна.", 400);
   }
 

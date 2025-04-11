@@ -38,18 +38,26 @@ const matchCategory = async (categories, user) => {
       : Infinity;
     const catHeight = cat.height ? parseInt(cat.height, 10) : Infinity;
 
-    // if weight is empty, allow it
-    if (!cat.weight || cat.weight === "") return true;
-    // if height is empty, allow it
-    if (!cat.height || cat.height === "") return true;
+    // skip if weight defined and user's too heavy
+    if (cat.weight && user.userWeight > catWeight && !cat.weight.includes("+"))
+      return false;
 
-    // if user's weight is less than or equal, accept
-    if (user.userWeight <= catWeight) {
-      // if user's height is less than or equal, accept
-      if (userHeight <= catHeight) return true;
-    }
+    // skip if height defined and user's too tall
+    if (cat.height && user.userHeight && user.userHeight > catHeight)
+      return false;
 
-    return false;
+    // // if weight is empty, allow it
+    // if (!cat.weight || cat.weight === "") return true;
+    // // if height is empty, allow it
+    // if (!cat.height || cat.height === "") return true;
+
+    // // if user's weight is less than or equal, accept
+    // if (user.userWeight <= catWeight) {
+    //   // if user's height is less than or equal, accept
+    //   if (user.userHeight && user.userHeight <= catHeight) return true;
+    // }
+
+    return true;
   });
 
   return matchedCategory ?? false;
