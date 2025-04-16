@@ -216,11 +216,17 @@ exports.endMatch = asyncHandler(async (req, res, next) => {
     const playerTwoScores = Object.values(scores[match.playerTwo]);
 
     const playerOneTotal = playerOneScores.reduce((acc, cur) => {
-      return parseInt(acc) + parseInt(cur.score);
+      const refereeId = Object.keys(cur)[0];
+      return acc + parseInt(cur[refereeId].score);
     }, 0);
     const playerTwoTotal = playerTwoScores.reduce((acc, cur) => {
-      return parseInt(acc) + parseInt(cur.score);
+      const refereeId = Object.keys(cur)[0];
+      return acc + parseInt(cur[refereeId].score);
     }, 0);
+
+    if (playerOneTotal === playerTwoTotal) {
+      throw new myError("Тоглолт тэнцсэн байна.", 400);
+    }
 
     const winner =
       playerOneTotal > playerTwoTotal ? match.playerOne : match.playerTwo;

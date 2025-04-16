@@ -13,10 +13,12 @@ const swaggerDocument = require("./swaggerDoc.json");
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/error");
 const { authenticateRequest } = require("./middleware/validateRequest");
+const { byeParticipantNextRound } = require("./jobs/competitionJobs");
 
 dotenv.config({ path: "./config/configProduction.env" });
 
 connectDB();
+byeParticipantNextRound();
 
 if (process.env.NODE_ENV === "production") {
   const privatekey = fs.readFileSync("/etc/ssl/warfc/warfc.key");
