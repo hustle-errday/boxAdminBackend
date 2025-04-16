@@ -310,19 +310,40 @@ exports.getMatchesForReferee = asyncHandler(async (req, res, next) => {
     .sort({ round: 1, matchNumber: 1 })
     .lean();
 
-  matches.forEach((match) => {
+  for (const match of matches) {
+    const playerOneUser = match.playerOne?.userId;
+    const playerTwoUser = match.playerTwo?.userId;
+
+    let playerOneClub = null;
+    let playerTwoClub = null;
+
+    if (playerOneUser?.club) {
+      const theClub = await models.club.findById(playerOneUser.club).lean();
+      playerOneClub = theClub
+        ? { _id: theClub._id, name: theClub.name, logo: theClub.logo ?? "" }
+        : null;
+    }
+    if (playerTwoUser?.club) {
+      const theClub = await models.club.findById(playerTwoUser.club).lean();
+      playerTwoClub = theClub
+        ? { _id: theClub._id, name: theClub.name, logo: theClub.logo ?? "" }
+        : null;
+    }
+
     match.playerOne = match.playerOne
       ? {
           _id: match.playerOne._id,
-          firstName: match.playerOne.userId.firstName,
-          lastName: match.playerOne.userId.lastName,
+          firstName: playerOneUser.firstName,
+          lastName: playerOneUser.lastName,
+          club: playerOneClub,
         }
       : null;
     match.playerTwo = match.playerTwo
       ? {
           _id: match.playerTwo._id,
-          firstName: match.playerTwo.userId.firstName,
-          lastName: match.playerTwo.userId.lastName,
+          firstName: playerTwoUser.firstName,
+          lastName: playerTwoUser.lastName,
+          club: playerTwoClub,
         }
       : null;
     match.winner = match.winner
@@ -334,18 +355,18 @@ exports.getMatchesForReferee = asyncHandler(async (req, res, next) => {
       : null;
 
     if (match.score) {
-      Object.keys(match.score).forEach((key) => {
-        if (key.toString() == match.playerOne._id.toString()) {
+      for (const key of Object.keys(match.score)) {
+        if (key.toString() === match.playerOne?._id?.toString()) {
           match.score.playerOne = match.score[key];
           delete match.score[key];
         }
-        if (key.toString() == match.playerTwo._id.toString()) {
+        if (key.toString() === match.playerTwo?._id?.toString()) {
           match.score.playerTwo = match.score[key];
           delete match.score[key];
         }
-      });
+      }
     }
-  });
+  }
 
   res.status(200).json({
     success: true,

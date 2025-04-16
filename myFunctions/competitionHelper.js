@@ -46,17 +46,6 @@ const matchCategory = async (categories, user) => {
     if (cat.height && user.userHeight && user.userHeight > catHeight)
       return false;
 
-    // // if weight is empty, allow it
-    // if (!cat.weight || cat.weight === "") return true;
-    // // if height is empty, allow it
-    // if (!cat.height || cat.height === "") return true;
-
-    // // if user's weight is less than or equal, accept
-    // if (user.userWeight <= catWeight) {
-    //   // if user's height is less than or equal, accept
-    //   if (user.userHeight && user.userHeight <= catHeight) return true;
-    // }
-
     return true;
   });
 

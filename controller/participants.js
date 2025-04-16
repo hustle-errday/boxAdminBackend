@@ -33,7 +33,6 @@ exports.getParticipantList = asyncHandler(async (req, res, next) => {
           __v: 0,
           password: 0,
           role: 0,
-          registrationNumber: 0,
           isActive: 0,
           createdAt: 0,
         }
@@ -220,6 +219,17 @@ exports.validateParticipant = asyncHandler(async (req, res, next) => {
       throw new myError("Тамирчинд таарах ангилал олдсонгүй.", 400);
     }
 
+    await models.user.updateOne(
+      { _id: participant.userId },
+      {
+        $set: {
+          sex: data.sex ?? "",
+          birthDate: data.birthDate ?? "",
+          height: data.height ?? null,
+          weight: data.weight ?? null,
+        },
+      }
+    );
     await models.participant.updateOne(
       { _id: _id },
       { $set: { status: "approved", categoryId: matchedCategory._id } }

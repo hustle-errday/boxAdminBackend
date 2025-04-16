@@ -37,8 +37,7 @@ const matchSchema = new mongoose.Schema({
     required: true,
   },
   refereeCount: {
-    type: Number,
-    default: 0,
+    type: Object,
   },
   matchDateTime: {
     type: String,

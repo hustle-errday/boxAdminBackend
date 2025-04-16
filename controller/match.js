@@ -230,7 +230,6 @@ exports.getMatches = asyncHandler(async (req, res, next) => {
             ? { _id: theClub._id, name: theClub.name, logo: theClub.logo ?? "" }
             : null;
         }
-
         if (match.playerTwo?.userId?.club) {
           const theClub = await models.club
             .findById({ _id: match.playerTwo.userId.club })
@@ -249,7 +248,6 @@ exports.getMatches = asyncHandler(async (req, res, next) => {
               club: playerOneClub,
             }
           : null;
-
         const playerTwo = match.playerTwo
           ? {
               _id: match.playerTwo._id,
@@ -259,6 +257,19 @@ exports.getMatches = asyncHandler(async (req, res, next) => {
               club: playerTwoClub,
             }
           : null;
+
+        if (match.score) {
+          for (const key of Object.keys(match.score)) {
+            if (key.toString() === match.playerOne?._id?.toString()) {
+              match.score.playerOne = match.score[key];
+              delete match.score[key];
+            }
+            if (key.toString() === match.playerTwo?._id?.toString()) {
+              match.score.playerTwo = match.score[key];
+              delete match.score[key];
+            }
+          }
+        }
 
         return {
           round,

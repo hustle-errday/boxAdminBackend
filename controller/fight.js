@@ -54,7 +54,7 @@ exports.giveScore = asyncHandler(async (req, res, next) => {
   if (!match) {
     throw new myError("Тоглолт олдсонгүй.", 400);
   }
-  if (match.refereeCount === 3) {
+  if (match.refereeCount && Object.keys(match.refereeCount).length === 3) {
     throw new myError("3 шүүгч дуусгах саналаа өгсөн байна.", 400);
   }
   if (participants.length !== 2) {
@@ -78,65 +78,77 @@ exports.giveScore = asyncHandler(async (req, res, next) => {
     throw new myError("K.O хоёр тоглогч байх боломжгүй.", 400);
   }
 
+  const newScores = {};
   if (playerOne.score === "K.O" || playerTwo.score === "K.O") {
     const winner = playerOne.score === "K.O" ? playerOne._id : playerTwo._id;
+    const scoringPlayer = playerOne.score === "K.O" ? playerOne : playerTwo;
 
-    if (playerOne.score === "K.O") {
-      const newScores = {
-        [`scores.${playerOne._id}.round${roundNumber}`]: {
-          referee: token._id,
-          score: playerOne.score,
-          description,
-        },
-      };
+    newScores[`score.${scoringPlayer._id}.round${roundNumber}.${token._id}`] = {
+      score: "K.O",
+      description,
+    };
 
-      await models.match.updateOne(
-        { _id: matchId },
-        { $set: { score: newScores, winner: winner } }
-      );
-    }
-    if (playerTwo.score === "K.O") {
-      const newScores = {
-        [`scores.${playerTwo._id}.round${roundNumber}`]: {
-          referee: token._id,
-          score: playerTwo.score,
-          description,
-        },
-      };
+    match.refereeCount = match.refereeCount || {};
+    match.refereeCount[token._id] = true;
+    const count = Object.keys(match.refereeCount).length;
 
-      await models.match.updateOne(
-        { _id: matchId },
-        { $set: { score: newScores, winner: winner } }
-      );
-    }
+    const updateData = {
+      ...newScores,
+      refereeCount: match.refereeCount,
+    };
 
-    const count = match.refereeCount + 1;
     if (count === 3) {
-      const now = moment.tz("Asia/Ulaanbaatar").format("YYYY-MM-DD HH:mm:ss");
-      await models.match.updateOne(
-        { _id: matchId },
-        { $set: { matchDateTime: now, refereeCount: count } }
-      );
+      updateData.matchDateTime = moment
+        .tz("Asia/Ulaanbaatar")
+        .format("YYYY-MM-DD HH:mm:ss");
+      updateData.winner = winner;
+
+      // logic to move winner to the next round
+      const nextRoundMatchNumber = Math.ceil(match.matchNumber / 2);
+      const nextRound = match.round + 1;
+
+      const nextRoundMatch = await models.match.findOne({
+        competitionId: match.competitionId,
+        categoryId: match.categoryId,
+        round: nextRound,
+        matchNumber: nextRoundMatchNumber,
+      });
+
+      if (nextRoundMatch) {
+        if (match.matchNumber % 2 === 1) {
+          // winner goes to playerOne
+          await models.match.updateOne(
+            {
+              _id: nextRoundMatch._id,
+            },
+            { $set: { playerOne: winner } }
+          );
+        } else {
+          // winner goes to playerTwo
+          await models.match.updateOne(
+            {
+              _id: nextRoundMatch._id,
+            },
+            { $set: { playerTwo: winner } }
+          );
+        }
+      }
     }
-    if (count < 3) {
-      await models.match.updateOne(
-        { _id: matchId },
-        { $inc: { refereeCount: 1 } }
-      );
-    }
+
+    await models.match.updateOne({ _id: matchId }, { $set: updateData });
+
+    return res.status(200).json({
+      success: true,
+    });
   }
 
-  const newScores = {
-    [`score.${playerOne._id}.round${roundNumber}`]: {
-      referee: token._id,
-      score: playerOne.score,
-      description,
-    },
-    [`score.${playerTwo._id}.round${roundNumber}`]: {
-      referee: token._id,
-      score: playerTwo.score,
-      description,
-    },
+  newScores[`score.${playerOne._id}.round${roundNumber}.${token._id}`] = {
+    score: playerOne.score,
+    description,
+  };
+  newScores[`score.${playerTwo._id}.round${roundNumber}.${token._id}`] = {
+    score: playerTwo.score,
+    description,
   };
 
   await models.match.updateOne({ _id: matchId }, { $set: newScores });
@@ -176,7 +188,7 @@ exports.endMatch = asyncHandler(async (req, res, next) => {
   if (!match) {
     throw new myError("Тоглолт олдсонгүй.", 400);
   }
-  if (match.refereeCount === 3) {
+  if (match.refereeCount && Object.keys(match.refereeCount).length === 3) {
     throw new myError("3 шүүгч дуусгах саналаа өгсөн байна.", 400);
   }
   if (
@@ -186,8 +198,15 @@ exports.endMatch = asyncHandler(async (req, res, next) => {
   ) {
     throw new myError("Тэмцээнд харьяалагдаагүй шүүгч байна.", 400);
   }
+  if (match.refereeCount?.[token._id]) {
+    throw new myError("Та энэ тоглолтонд дуусгах санал өгсөн байна.", 400);
+  }
 
-  const count = match.refereeCount + 1;
+  match.refereeCount = match.refereeCount || {};
+  match.refereeCount[token._id] = true;
+
+  const count = Object.keys(match.refereeCount).length;
+
   // if count === 3 then calculate winner, it means match ended
   if (count === 3) {
     const scores = match.score;
@@ -208,14 +227,47 @@ exports.endMatch = asyncHandler(async (req, res, next) => {
 
     await models.match.updateOne(
       { _id: matchId },
-      { $set: { winner, matchDateTime: now, refereeCount: count } }
+      { $set: { winner, matchDateTime: now, refereeCount: match.refereeCount } }
     );
+
+    // logic to move winner to the next round
+    const nextRoundMatchNumber = Math.ceil(match.matchNumber / 2);
+    const nextRound = match.round + 1;
+
+    const nextRoundMatch = await models.match.findOne({
+      competitionId: match.competitionId,
+      categoryId: match.categoryId,
+      round: nextRound,
+      matchNumber: nextRoundMatchNumber,
+    });
+
+    if (nextRoundMatch) {
+      if (match.matchNumber % 2 === 1) {
+        // winner goes to playerOne
+        await models.match.updateOne(
+          {
+            _id: nextRoundMatch._id,
+          },
+          { $set: { playerOne: winner } }
+        );
+      } else {
+        // winner goes to playerTwo
+        await models.match.updateOne(
+          {
+            _id: nextRoundMatch._id,
+          },
+          { $set: { playerTwo: winner } }
+        );
+      }
+    }
   }
   // if count < 3 then just increment refereeCount
   if (count < 3) {
     await models.match.updateOne(
       { _id: matchId },
-      { $inc: { refereeCount: 1 } }
+      {
+        $set: { refereeCount: match.refereeCount },
+      }
     );
   }
 
