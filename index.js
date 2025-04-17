@@ -14,10 +14,12 @@ const connectDB = require("./config/db");
 const errorHandler = require("./middleware/error");
 const { authenticateRequest } = require("./middleware/validateRequest");
 const { byeParticipantNextRound } = require("./jobs/competitionJobs");
+const { notifAuth } = require("./config/notification");
 
 dotenv.config({ path: "./config/configProduction.env" });
 
 connectDB();
+// notifAuth();
 byeParticipantNextRound();
 
 if (process.env.NODE_ENV === "production") {
