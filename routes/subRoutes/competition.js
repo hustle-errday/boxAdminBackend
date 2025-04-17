@@ -10,6 +10,7 @@ const {
   getCompetitionCategories,
   makeCompetitionUnique,
   getAllReferees,
+  getAllCompetition,
 } = require("../../controller/competition");
 const { body, query } = require("express-validator");
 const requestDataValidation = require("../../middleware/requestDataValidation");
@@ -96,5 +97,6 @@ router
     requestDataValidation,
     getAllReferees
   );
+router.route("/all").get(getAllCompetition);
 
 module.exports = router;

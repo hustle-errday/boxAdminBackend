@@ -479,3 +479,61 @@ exports.getAllReferees = asyncHandler(async (req, res, next) => {
     data: competition.referees,
   });
 });
+
+exports.getAllCompetition = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Competition']
+  #swagger.summary = 'Get All Competition'
+  #swagger.description = 'Get all competitions'
+  */
+
+  const competitions = await models.competition.find({}, { __v: 0 }).lean();
+
+  const ongoingCompetitions = [];
+  const upcomingCompetitions = [];
+  const pastCompetitions = [];
+  for (let i = 0; i < competitions.length; i++) {
+    const now = moment().tz("Asia/Ulaanbaatar").format("YYYY-MM-DD HH:mm:ss");
+
+    const startDate = competitions[i].startDate
+      ? moment(competitions[i].startDate)
+          .tz("Asia/Ulaanbaatar")
+          .format("YYYY-MM-DD HH:mm:ss")
+      : null;
+    // if there is no endDate then set it to 9999-12-31 23:59:59
+    // means all competitions without an end date will stay in the ongoing list indefinitely
+    const endDate = competitions[i].endDate
+      ? moment(competitions[i].endDate)
+          .tz("Asia/Ulaanbaatar")
+          .format("YYYY-MM-DD HH:mm:ss")
+      : "9999-12-31 23:59:59";
+
+    if (startDate && moment(now).isBefore(moment(startDate))) {
+      upcomingCompetitions.push({
+        _id: competitions[i]._id,
+        name: competitions[i].name,
+      });
+    } else if (moment(now).isAfter(moment(endDate))) {
+      pastCompetitions.push({
+        _id: competitions[i]._id,
+        name: competitions[i].name,
+      });
+    } else {
+      ongoingCompetitions.push({
+        _id: competitions[i]._id,
+        name: competitions[i].name,
+      });
+    }
+  }
+
+  const data = {
+    ongoing: ongoingCompetitions,
+    upcoming: upcomingCompetitions,
+    past: pastCompetitions,
+  };
+
+  res.status(200).json({
+    success: true,
+    data: data,
+  });
+});

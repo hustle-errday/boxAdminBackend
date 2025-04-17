@@ -55,23 +55,23 @@ const sendNotification = async (token, title, incomingBody) => {
     .catch(async (err) => {
       // if the token is not found, we delete it from the database
       // because it's not valid anymore
-      // if (
-      //   err.response &&
-      //   err.response.status === 404 &&
-      //   err.response.statusText === "Not Found"
-      // ) {
-      //   // some parsing to get the token
-      //   const errData = JSON.parse(err.response.config.data);
-      //   const theToken = await models.notification.findOne({
-      //     notifKey: errData.message.token,
-      //   });
-      //   if (theToken) {
-      //     await models.notification.deleteOne({
-      //       notifKey: errData.message.token,
-      //     });
-      //     console.log("deleted the token");
-      //   }
-      // }
+      if (
+        err.response &&
+        err.response.status === 404 &&
+        err.response.statusText === "Not Found"
+      ) {
+        // some parsing to get the token
+        const errData = JSON.parse(err.response.config.data);
+        const theToken = await models.notifToken.findOne({
+          notifKey: errData.message.token,
+        });
+        if (theToken) {
+          await models.notifToken.deleteOne({
+            notifKey: errData.message.token,
+          });
+          console.log("deleted the token");
+        }
+      }
     });
 };
 
