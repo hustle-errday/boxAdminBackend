@@ -4,6 +4,8 @@ const cron = require("node-cron");
 
 const byeParticipantNextRound = () => {
   cron.schedule("0 */1 * * *", async () => {
+    console.log("byeParticipantNextRound job started");
+
     const currentDate = moment().tz("Asia/Ulaanbaatar");
 
     const competitions = await models.competition.find({}).lean();
@@ -15,11 +17,13 @@ const byeParticipantNextRound = () => {
       const startDate = moment(competition.startDate, "YYYY-MM-DD HH:mm:ss").tz(
         "Asia/Ulaanbaatar"
       );
-      const startDatePlusOneHour = startDate.clone().add(1, "hours");
+      const isWithinOneHour =
+        currentDate.isSameOrAfter(startDate.clone().subtract(1, "hours")) &&
+        currentDate.isSameOrBefore(startDate.clone().add(1, "hours"));
 
-      if (currentDate.isSameOrAfter(startDatePlusOneHour)) {
+      if (isWithinOneHour) {
         const categories = await models.category
-          .find({ competitionId: competition._id })
+          .find({ _id: { $in: competition.categories } })
           .lean();
 
         for (let j = 0; j < categories.length; j++) {
