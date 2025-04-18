@@ -37,6 +37,7 @@ exports.getParticipantList = asyncHandler(async (req, res, next) => {
           createdAt: 0,
         }
       )
+      .populate("club", "name")
       .lean();
     if (!userInfo) {
       throw new myError("Тамирчин олдсонгүй.", 400);
