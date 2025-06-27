@@ -18,7 +18,7 @@ const { byeParticipantNextRound } = require("./jobs/competitionJobs");
 const { updateRankings } = require("./jobs/rankingJob");
 const { notifAuth } = require("./config/notification");
 
-dotenv.config({ path: "./config/configProduction.env" });
+dotenv.config({ path: "./config/config.env" });
 
 connectDB();
 notifAuth();
