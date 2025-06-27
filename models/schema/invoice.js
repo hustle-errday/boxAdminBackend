@@ -1,39 +1,44 @@
 const mongoose = require("mongoose");
 const moment = require("moment-timezone");
 
-const participantSchema = new mongoose.Schema({
+const invoiceSchema = new mongoose.Schema({
   competitionId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "competition",
-    required: true,
   },
-  userId: {
+  participantId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "participant",
+  },
+  total: {
+    type: Number,
     required: true,
   },
-  chargePaid: {
+  invoice_id: {
+    type: String,
+  },
+  isPaid: {
     type: Boolean,
     default: false,
   },
   paidAt: {
     type: String,
     trim: true,
+    default: "",
   },
-  categoryId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "category",
-    required: true,
+  // ebarimtGenerated: {
+  //   type: Boolean,
+  //   default: false,
+  // },
+  // ebarimtLines: {
+  //   type: Array,
+  // },
+  qpay: {
+    type: Object,
   },
-  status: {
-    type: String,
-    enum: ["pending", "approved", "rejected"],
-    default: "pending",
-  },
-  reason: {
-    type: String,
-    trim: true,
-  },
+  // ebarimt: {
+  //   type: Object,
+  // },
   createdAt: {
     type: String,
     default: function () {
@@ -42,4 +47,4 @@ const participantSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("participant", participantSchema);
+module.exports = mongoose.model("invoice", invoiceSchema);

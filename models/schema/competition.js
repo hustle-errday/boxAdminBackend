@@ -68,6 +68,10 @@ const competitionSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isOver: {
+    type: Boolean,
+    default: false,
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "admin",

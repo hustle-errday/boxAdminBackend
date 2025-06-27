@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
   },
   registrationNumber: {
     type: String,
+    unique: true,
     trim: true,
   },
   sex: {
@@ -67,7 +68,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.index({ phoneNo: 1 }, { unique: true });
+userSchema.index({ phoneNo: 1, registrationNumber: 1 }, { unique: true });
 userSchema.pre("save", async function () {
   if (this.isModified("password")) {
     const salt = await bcrypt.genSalt(10);

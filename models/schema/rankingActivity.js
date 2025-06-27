@@ -1,10 +1,20 @@
 const mongoose = require("mongoose");
 const moment = require("moment-timezone");
 
-const participantSchema = new mongoose.Schema({
+const rankingActivitySchema = new mongoose.Schema({
   competitionId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "competition",
+    required: true,
+  },
+  categoryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "category",
+    required: true,
+  },
+  matchId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "match",
     required: true,
   },
   userId: {
@@ -12,27 +22,9 @@ const participantSchema = new mongoose.Schema({
     ref: "user",
     required: true,
   },
-  chargePaid: {
-    type: Boolean,
-    default: false,
-  },
-  paidAt: {
-    type: String,
-    trim: true,
-  },
-  categoryId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "category",
+  score: {
+    type: Number,
     required: true,
-  },
-  status: {
-    type: String,
-    enum: ["pending", "approved", "rejected"],
-    default: "pending",
-  },
-  reason: {
-    type: String,
-    trim: true,
   },
   createdAt: {
     type: String,
@@ -42,4 +34,4 @@ const participantSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("participant", participantSchema);
+module.exports = mongoose.model("rankingActivity", rankingActivitySchema);

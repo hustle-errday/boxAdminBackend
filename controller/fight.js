@@ -3,6 +3,7 @@ const myError = require("../utility/myError");
 const models = require("../models/models");
 const moment = require("moment-timezone");
 const jwt = require("jsonwebtoken");
+const { trackScoreUpdate } = require("../myFunctions/rankingHelper");
 
 exports.giveScore = asyncHandler(async (req, res, next) => {
   /*
@@ -133,6 +134,9 @@ exports.giveScore = asyncHandler(async (req, res, next) => {
           );
         }
       }
+
+      // ranking section
+      await trackScoreUpdate(match, winner);
     }
 
     await models.match.updateOne({ _id: matchId }, { $set: updateData });
@@ -266,6 +270,16 @@ exports.endMatch = asyncHandler(async (req, res, next) => {
         );
       }
     }
+
+    const theParticipant = await models.participant
+      .findOne({
+        _id: winner,
+        competitionId: match.competitionId,
+      })
+      .lean();
+
+    // ranking section
+    await trackScoreUpdate(match, theParticipant.userId);
   }
   // if count < 3 then just increment refereeCount
   if (count < 3) {
@@ -291,6 +305,7 @@ exports.endMatch = asyncHandler(async (req, res, next) => {
           endDate: moment()
             .tz("Asia/Ulaanbaatar")
             .format("YYYY-MM-DD HH:mm:ss"),
+          isOver: true,
         },
       }
     );

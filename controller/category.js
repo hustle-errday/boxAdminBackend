@@ -4,8 +4,6 @@ const models = require("../models/models");
 const jwt = require("jsonwebtoken");
 const { transformData } = require("../myFunctions/competitionHelper");
 
-// @todo busnii ungu nemeheer yaj oruulahiin boldoo rank nemeh yum bolowuu tegjaagaad
-
 exports.createCategory = asyncHandler(async (req, res, next) => {
   /*
   #swagger.tags = ['Category']
