@@ -77,25 +77,44 @@ const updateRankings = async () => {
             continue;
           }
 
-          for (let i = 0; i < finalMatches.length; i++) {
-            const winnerId = finalMatches[i]?.winner?.userId?._id;
-            const loserId =
-              finalMatches[i]?.playerOne?.userId?._id === winnerId
-                ? finalMatches[i]?.playerTwo?.userId?._id
-                : finalMatches[i]?.playerOne?.userId?._id;
+          if (finalMatches.length >= 1) {
+            const goldMatch = finalMatches[0];
+            const goldWinnerId = goldMatch?.winner?.userId?._id.toString();
+            const goldLoserId =
+              goldMatch?.playerOne?.userId?._id.toString() === goldWinnerId
+                ? goldMatch?.playerTwo?.userId?._id.toString()
+                : goldMatch?.playerOne?.userId?._id.toString();
 
             const updatingData = {
-              _id: finalMatches[i]._id,
+              _id: finalMatches[0]._id,
               categoryId: category._id,
-              matchId: finalMatches[i]._id,
+              matchId: finalMatches[0]._id,
               competitionId: { _id: competition._id },
             };
 
-            if (i === 0) {
-              await trackScoreUpdate(updatingData, winnerId, 10);
-              await trackScoreUpdate(updatingData, loserId, 5);
-            } else if (i === 1 || i === 2) {
-              await trackScoreUpdate(updatingData, loserId, 2);
+            if (goldWinnerId)
+              await trackScoreUpdate(updatingData, goldWinnerId, 10);
+            if (goldLoserId)
+              await trackScoreUpdate(updatingData, goldLoserId, 5);
+          }
+          if (finalMatches.length >= 2) {
+            for (let i = 1; i < finalMatches.length; i++) {
+              const bronzeMatch = finalMatches[i];
+              const bronzeLoserId =
+                bronzeMatch?.playerOne?.userId?._id.toString() ===
+                bronzeMatch?.winner?.userId?._id.toString()
+                  ? bronzeMatch?.playerTwo?.userId?._id.toString()
+                  : bronzeMatch?.playerOne?.userId?._id.toString();
+
+              const updatingData = {
+                _id: finalMatches[i]._id,
+                categoryId: category._id,
+                matchId: finalMatches[i]._id,
+                competitionId: { _id: competition._id },
+              };
+
+              if (bronzeLoserId)
+                await trackScoreUpdate(updatingData, bronzeLoserId, 2);
             }
           }
         }

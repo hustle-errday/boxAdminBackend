@@ -303,7 +303,7 @@ exports.getParticipantRankingMore = asyncHandler(async (req, res, next) => {
     if (!userId) continue;
 
     const userParticipants = participants.filter(
-      (p) => p.userId.toString() === userId
+      (p) => p.userId?.toString() === userId
     );
 
     let wins = 0,
@@ -312,12 +312,12 @@ exports.getParticipantRankingMore = asyncHandler(async (req, res, next) => {
       const userMatches = matches.filter(
         (m) =>
           m.categoryId.toString() === theCategory._id.toString() &&
-          (m.playerOne.toString() === p._id.toString() ||
-            m.playerTwo.toString() === p._id.toString())
+          (m.playerOne?.toString() === p._id.toString() ||
+            m.playerTwo?.toString() === p._id.toString())
       );
 
       for (const match of userMatches) {
-        if (match.winner.toString() === p._id.toString()) wins++;
+        if (match.winner?.toString() === p._id.toString()) wins++;
         else losses++;
       }
     }

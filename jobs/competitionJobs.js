@@ -54,6 +54,12 @@ const byeParticipantNextRound = () => {
               const nextRoundMatchNumber = Math.ceil(match.matchNumber / 2);
               const nextRound = match.round + 1;
 
+              // set this match's winner
+              await models.match.updateOne(
+                { _id: match._id },
+                { $set: { winner: byePlayerId } }
+              );
+
               const nextRoundMatch = await models.match.findOne({
                 competitionId: competition._id,
                 categoryId: categoryId,
