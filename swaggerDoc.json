@@ -15,6 +15,16 @@
     "http"
   ],
   "paths": {
+    "/mba": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/auth/login": {
       "post": {
         "tags": [
@@ -1774,6 +1784,378 @@
         }
       }
     },
+    "/api/sponsor/get": {
+      "get": {
+        "tags": [
+          "Sponsor"
+        ],
+        "summary": "Get sponsors",
+        "description": "Get all sponsors",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/sponsor/add": {
+      "post": {
+        "tags": [
+          "Sponsor"
+        ],
+        "summary": "Add sponsor",
+        "description": "Add a new sponsor",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sponsor data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "image": {
+                  "type": "string",
+                  "example": "https://example.com/image.jpg"
+                },
+                "link": {
+                  "type": "string",
+                  "example": "https://example.com"
+                },
+                "isCollab": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/sponsor/update": {
+      "put": {
+        "tags": [
+          "Sponsor"
+        ],
+        "summary": "Update sponsor",
+        "description": "Update an existing sponsor",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sponsor data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                },
+                "image": {
+                  "type": "string",
+                  "example": "https://example.com/image.jpg"
+                },
+                "link": {
+                  "type": "string",
+                  "example": "https://example.com"
+                },
+                "isCollab": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/sponsor/delete": {
+      "delete": {
+        "tags": [
+          "Sponsor"
+        ],
+        "summary": "Delete sponsor",
+        "description": "Delete an existing sponsor",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sponsor ID",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/info/get": {
+      "get": {
+        "tags": [
+          "Information"
+        ],
+        "summary": "Get information",
+        "description": "Get all information",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/info/add": {
+      "post": {
+        "tags": [
+          "Information"
+        ],
+        "summary": "Add information",
+        "description": "Add new information",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Information data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "image": {
+                  "type": "string",
+                  "example": "https://example.com/image.jpg"
+                },
+                "link": {
+                  "type": "string",
+                  "example": "https://example.com"
+                },
+                "title": {
+                  "type": "string",
+                  "example": "New Information"
+                },
+                "content": {
+                  "type": "string",
+                  "example": "This is the content of the new information."
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/info/update": {
+      "put": {
+        "tags": [
+          "Information"
+        ],
+        "summary": "Update information",
+        "description": "Update existing information",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Updated information data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "60c72b2f9b1e8b001c8e4d3a"
+                },
+                "image": {
+                  "type": "string",
+                  "example": "https://example.com/new-image.jpg"
+                },
+                "link": {
+                  "type": "string",
+                  "example": "https://example.com/new-link"
+                },
+                "title": {
+                  "type": "string",
+                  "example": "Updated Information Title"
+                },
+                "content": {
+                  "type": "string",
+                  "example": "Updated content of the information."
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/info/delete": {
+      "delete": {
+        "tags": [
+          "Information"
+        ],
+        "summary": "Delete information",
+        "description": "Delete an existing information",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "ID of the information to delete",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "60c72b2f9b1e8b001c8e4d3a"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/api/category/create": {
       "post": {
         "tags": [
@@ -1820,6 +2202,10 @@
                 "height": {
                   "type": "string",
                   "example": "160"
+                },
+                "level": {
+                  "type": "string",
+                  "example": "amateur/semi pro/pro"
                 }
               }
             }
@@ -1956,6 +2342,10 @@
                 "height": {
                   "type": "string",
                   "example": "160"
+                },
+                "level": {
+                  "type": "string",
+                  "example": "amateur/semi pro/pro"
                 }
               }
             }
@@ -2080,6 +2470,10 @@
                 "organizer": {
                   "type": "string",
                   "example": "zohion baiguulj baigaa gazar"
+                },
+                "rankAffect": {
+                  "type": "boolean",
+                  "example": true
                 }
               }
             }
@@ -2247,6 +2641,10 @@
                 "organizer": {
                   "type": "string",
                   "example": "zohion baiguulj baigaa gazar"
+                },
+                "rankAffect": {
+                  "type": "boolean",
+                  "example": true
                 }
               }
             }

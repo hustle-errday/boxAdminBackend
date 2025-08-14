@@ -8,7 +8,7 @@ const updateRankings = async () => {
     // cron.schedule("* * * * *", async () => {
     // find non-finished competitions
     const competitions = await models.competition
-      .find({ isOver: false })
+      .find({ isOver: false, rankAffect: true })
       .lean();
 
     if (competitions.length === 0) return;

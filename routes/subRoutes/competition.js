@@ -31,6 +31,7 @@ router
     body("address").isString().optional(),
     body("banner").optional(),
     body("organizer").isString().optional(),
+    body("rankAffect").isBoolean().notEmpty(),
     requestDataValidation,
     createCompetition
   );
@@ -58,6 +59,7 @@ router
     body("address").isString().optional(),
     body("banner").optional(),
     body("organizer").isString().optional(),
+    body("rankAffect").isBoolean().notEmpty(),
     requestDataValidation,
     updateCompetition
   );

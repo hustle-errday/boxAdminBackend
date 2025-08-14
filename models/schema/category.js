@@ -27,6 +27,10 @@ const categorySchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  level: {
+    type: String,
+    enum: ["amateur", "semi pro", "pro"],
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "admin",

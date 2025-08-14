@@ -19,6 +19,7 @@ router
     body("age").notEmpty(),
     body("weight").notEmpty(),
     body("height").optional(),
+    body("level").isString().optional(),
     requestDataValidation,
     createCategory
   );
@@ -45,6 +46,7 @@ router
     body("age").notEmpty(),
     body("weight").notEmpty(),
     body("height").optional(),
+    body("level").isString().optional(),
     requestDataValidation,
     updateCategory
   );

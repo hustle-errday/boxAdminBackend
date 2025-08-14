@@ -26,6 +26,7 @@ exports.createCompetition = asyncHandler(async (req, res, next) => {
       address: 'address',
       banner: 'banner',
       organizer: 'zohion baiguulj baigaa gazar',
+      rankAffect: true
     }
   }
   */
@@ -44,6 +45,7 @@ exports.createCompetition = asyncHandler(async (req, res, next) => {
     address,
     banner,
     organizer,
+    rankAffect,
   } = req.body;
   const token = jwt.decode(req.headers.authorization.split(" ")[1]);
 
@@ -102,6 +104,7 @@ exports.createCompetition = asyncHandler(async (req, res, next) => {
     address,
     banner,
     organizer,
+    rankAffect,
     createdBy: token._id,
   });
 
@@ -232,6 +235,7 @@ exports.updateCompetition = asyncHandler(async (req, res, next) => {
       address: 'address',
       banner: 'banner',
       organizer: 'zohion baiguulj baigaa gazar',
+      rankAffect: true
     }
   }
   */
@@ -250,6 +254,7 @@ exports.updateCompetition = asyncHandler(async (req, res, next) => {
     address,
     banner,
     organizer,
+    rankAffect,
   } = req.body;
 
   const theCompetition = await models.competition.findById(_id).lean();
@@ -310,6 +315,7 @@ exports.updateCompetition = asyncHandler(async (req, res, next) => {
       address,
       banner,
       organizer,
+      rankAffect,
     },
     { new: true }
   );

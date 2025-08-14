@@ -47,7 +47,7 @@ exports.giveScore = asyncHandler(async (req, res, next) => {
   const [match, participants] = await Promise.all([
     models.match
       .findById({ _id: matchId })
-      .populate("competitionId", "referees")
+      .populate("competitionId", "referees rankAffect")
       .lean(),
     models.participant.find({ _id: { $in: participantIds } }).lean(),
   ]);
@@ -136,7 +136,9 @@ exports.giveScore = asyncHandler(async (req, res, next) => {
       }
 
       // ranking section
-      await trackScoreUpdate(match, winner);
+      if (match.competitionId.rankAffect) {
+        await trackScoreUpdate(match, winner);
+      }
     }
 
     await models.match.updateOne({ _id: matchId }, { $set: updateData });
@@ -186,7 +188,7 @@ exports.endMatch = asyncHandler(async (req, res, next) => {
 
   const match = await models.match
     .findById({ _id: matchId })
-    .populate("competitionId", "referees")
+    .populate("competitionId", "referees rankAffect")
     .lean();
 
   if (!match) {
@@ -279,7 +281,9 @@ exports.endMatch = asyncHandler(async (req, res, next) => {
       .lean();
 
     // ranking section
-    await trackScoreUpdate(match, theParticipant.userId);
+    if (match.competitionId.rankAffect) {
+      await trackScoreUpdate(match, theParticipant.userId);
+    }
   }
   // if count < 3 then just increment refereeCount
   if (count < 3) {

@@ -19,11 +19,12 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
       age: '8-10',
       weight: '24',
       height: '160',
+      level: 'amateur/semi pro/pro',
     }
   }
   */
 
-  const { typeId, name, sex, age, weight, height } = req.body;
+  const { typeId, name, sex, age, weight, height, level } = req.body;
   const token = jwt.decode(req.headers.authorization.split(" ")[1]);
 
   const theType = await models.type.findById({ _id: typeId }).lean();
@@ -43,6 +44,7 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
     age,
     weight,
     height,
+    level,
     createdBy: token._id,
   });
 
@@ -125,11 +127,12 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
       age: '8-10',
       weight: '24',
       height: '160',
+      level: 'amateur/semi pro/pro',
     }
   }
   */
 
-  const { _id, name, sex, age, weight, height } = req.body;
+  const { _id, name, sex, age, weight, height, level } = req.body;
 
   const checkDuplicate = await models.category
     .findOne({ _id: { $ne: _id }, name })
@@ -140,7 +143,7 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 
   const category = await models.category.findByIdAndUpdate(
     _id,
-    { name, sex, age, weight, height },
+    { name, sex, age, weight, height, level },
     { new: true }
   );
 
