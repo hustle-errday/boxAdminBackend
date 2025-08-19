@@ -385,7 +385,7 @@ exports.getRankingDetails = asyncHandler(async (req, res, next) => {
     throw new myError("Дэлгэрэнгүй мэдээлэл олдсонгүй.", 400);
   }
 
-  const [rankingActivities, participant, matches] = await Promise.all([
+  const [rankingActivities, participant] = await Promise.all([
     models.rankingActivity
       .find({ userId: theRank.userId._id })
       .sort({ _id: -1 })
@@ -395,24 +395,25 @@ exports.getRankingDetails = asyncHandler(async (req, res, next) => {
       .populate("categoryId", "name")
       .sort({ _id: -1 })
       .lean(),
-    models.match
-      .find({
-        $and: [
-          {
-            $or: [
-              { playerOne: { $in: participant.map((p) => p._id) } },
-              { playerTwo: { $in: participant.map((p) => p._id) } },
-            ],
-          },
-          { winner: { $exists: true } },
-        ],
-      })
-      .populate("competitionId", "name")
-      .populate("playerOne", "userId")
-      .populate("playerTwo", "userId")
-      .sort({ _id: -1 })
-      .lean(),
   ]);
+
+  const matches = await models.match
+    .find({
+      $and: [
+        {
+          $or: [
+            { playerOne: { $in: participant.map((p) => p._id) } },
+            { playerTwo: { $in: participant.map((p) => p._id) } },
+          ],
+        },
+        { winner: { $exists: true } },
+      ],
+    })
+    .populate("competitionId", "name")
+    .populate("playerOne", "userId")
+    .populate("playerTwo", "userId")
+    .sort({ _id: -1 })
+    .lean();
 
   const data = [];
   let goldenMedals = 0;
