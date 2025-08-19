@@ -91,6 +91,32 @@ app.get("/mba", async (req, res) => {
   //   console.log(`✅ Logged match ${match._id}`);
   // }
 
+  // const logs = await models.rankingActivity
+  //   .find({
+  //     competitionId: "67f55be2aab43cf945946535",
+  //   })
+  //   .lean();
+
+  // for (const log of logs) {
+  //   const userRank = await models.ranking.findOne({
+  //     userId: log.userId,
+  //   });
+
+  //   if (userRank) {
+  //     await models.ranking.updateOne(
+  //       { userId: log.userId },
+  //       {
+  //         $inc: { score: -log.score },
+  //       }
+  //     );
+  //     console.log(`✅ Updated rank for activity ${log._id}`);
+  //   } else {
+  //     console.log(
+  //       `❌ No rank found for user ${log.userId} in activity ${log._id}`
+  //     );
+  //   }
+  // }
+
   res.status(200).json({
     success: true,
   });

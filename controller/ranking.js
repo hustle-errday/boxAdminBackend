@@ -103,7 +103,13 @@ exports.getParticipantRanking = asyncHandler(async (req, res, next) => {
             m.categoryId.toString() === category._id.toString()
         );
 
-        for (const match of userMatches) {
+        // remove duplicates manually by _id
+        const uniqueMatches = userMatches.filter(
+          (m, idx, arr) =>
+            idx === arr.findIndex((x) => x._id.toString() === m._id.toString())
+        );
+
+        for (const match of uniqueMatches) {
           if (match.winner.toString() === p._id.toString()) wins++;
           else losses++;
         }
@@ -316,7 +322,13 @@ exports.getParticipantRankingMore = asyncHandler(async (req, res, next) => {
             m.playerTwo?.toString() === p._id.toString())
       );
 
-      for (const match of userMatches) {
+      // remove duplicates manually by _id
+      const uniqueMatches = userMatches.filter(
+        (m, idx, arr) =>
+          idx === arr.findIndex((x) => x._id.toString() === m._id.toString())
+      );
+
+      for (const match of uniqueMatches) {
         if (match.winner?.toString() === p._id.toString()) wins++;
         else losses++;
       }
@@ -373,7 +385,7 @@ exports.getRankingDetails = asyncHandler(async (req, res, next) => {
     throw new myError("Дэлгэрэнгүй мэдээлэл олдсонгүй.", 400);
   }
 
-  const [rankingActivities, participant] = await Promise.all([
+  const [rankingActivities, participant, matches] = await Promise.all([
     models.rankingActivity
       .find({ userId: theRank.userId._id })
       .sort({ _id: -1 })
@@ -381,6 +393,23 @@ exports.getRankingDetails = asyncHandler(async (req, res, next) => {
     models.participant
       .find({ userId: theRank.userId._id }, { __v: 0, createdAt: 0 })
       .populate("categoryId", "name")
+      .sort({ _id: -1 })
+      .lean(),
+    models.match
+      .find({
+        $and: [
+          {
+            $or: [
+              { playerOne: { $in: participant.map((p) => p._id) } },
+              { playerTwo: { $in: participant.map((p) => p._id) } },
+            ],
+          },
+          { winner: { $exists: true } },
+        ],
+      })
+      .populate("competitionId", "name")
+      .populate("playerOne", "userId")
+      .populate("playerTwo", "userId")
       .sort({ _id: -1 })
       .lean(),
   ]);
@@ -392,71 +421,51 @@ exports.getRankingDetails = asyncHandler(async (req, res, next) => {
   let losses = 0;
   let wins = 0;
   let ko = 0;
-  for (const activity of rankingActivities) {
-    // if it's in activity log, count as win
-    wins++;
 
+  // medals come from activities
+  for (const activity of rankingActivities) {
     if (activity.score === 10) goldenMedals++;
     else if (activity.score === 5) silverMedals++;
     else if (activity.score === 2) bronzeMedals++;
   }
-  for (const part of participant) {
-    const matches = await models.match
-      .find({
-        $and: [
-          {
-            $or: [{ playerOne: part._id }, { playerTwo: part._id }],
-          },
-          { playerOne: { $exists: true } },
-          { playerTwo: { $exists: true } },
-        ],
-      })
-      .populate("competitionId", "name")
-      .populate("playerOne", "userId")
-      .populate("playerTwo", "userId")
-      .sort({ _id: -1 })
-      .lean();
 
-    for (const match of matches) {
-      if (match.playerOne && match.playerTwo) {
-        const isLoser =
-          match.winner && match.winner.toString() !== part._id.toString();
+  // wins/losses/ko come from matches
+  for (const match of matches) {
+    const isMePlayerOne = participant.some(
+      (p) => match.playerOne?._id?.toString() === p._id.toString()
+    );
+    const meParticipant = isMePlayerOne ? match.playerOne : match.playerTwo;
+    const opponent = isMePlayerOne ? match.playerTwo : match.playerOne;
 
-        if (isLoser) losses++;
+    const isWin = match.winner?.toString() === meParticipant._id.toString();
+    if (isWin) wins++;
+    else losses++;
 
-        // K.O. count
-        if (match.score?.[part._id]) {
-          for (const round of Object.values(match.score[part._id])) {
-            for (const entry of Object.values(round)) {
-              if (entry?.score === "K.O.") ko++;
-            }
-          }
+    // check KO
+    if (match.score?.[meParticipant._id]) {
+      for (const round of Object.values(match.score[meParticipant._id])) {
+        for (const entry of Object.values(round)) {
+          if (entry?.score === "K.O.") ko++;
         }
-
-        // find competitor from user model
-        const isPlayerOneMe =
-          match.playerOne._id?.toString() === part._id.toString();
-        const opponent = isPlayerOneMe ? match.playerTwo : match.playerOne;
-        let opponentUser = null;
-
-        if (opponent?.userId) {
-          opponentUser = await models.user
-            .findById(opponent.userId, "firstName lastName imageUrl")
-            .lean();
-        }
-
-        // store match detail per participant
-        data.push({
-          matchId: match._id,
-          date: match.matchDateTime,
-          isWin: !isLoser,
-          isKO: ko > 0,
-          competition: match.competitionId?.name ?? "Тодорхойгүй",
-          category: part.categoryId?.name,
-          opponent: opponentUser,
-        });
       }
     }
+
+    let opponentUser = null;
+    if (opponent?.userId) {
+      opponentUser = await models.user
+        .findById(opponent.userId, "firstName lastName imageUrl")
+        .lean();
+    }
+
+    data.push({
+      matchId: match._id,
+      date: match.matchDateTime,
+      isWin,
+      isKO: ko > 0,
+      competition: match.competitionId?.name ?? "Тодорхойгүй",
+      category: meParticipant.categoryId?.name,
+      opponent: opponentUser,
+    });
   }
 
   theRank.userId.score = theRank.score;
