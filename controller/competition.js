@@ -433,14 +433,6 @@ exports.makeCompetitionUnique = asyncHandler(async (req, res, next) => {
   }
 
   if (isUnique === true) {
-    const unique = await models.competition.findOne({ isUnique: true }).lean();
-    if (unique) {
-      throw new myError(
-        "Зөвхөн нэг тэмцээнийг нүүр хуудсанд байршуулах боломжтой.",
-        400
-      );
-    }
-
     await models.competition.updateOne(
       { _id: competitionId },
       { isUnique: true }
