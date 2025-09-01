@@ -5,6 +5,7 @@ const {
   setCoachToClub,
   removeCoachFromClub,
   getClubList,
+  getAllClubList,
   updateClub,
   deleteClub,
 } = require("../../controller/club");
@@ -98,6 +99,14 @@ router.route("/get").get(
   query("name").isString().optional(),
   requestDataValidation,
   getClubList
+);
+router.route("/all").get(
+  /*
+    #swagger.tags = ['Club']
+    #swagger.summary = 'Get All Club List'
+    #swagger.description = 'Get all club list'
+  */
+  getAllClubList
 );
 router.route("/update").put(
   /*

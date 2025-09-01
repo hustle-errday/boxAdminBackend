@@ -64,6 +64,80 @@ exports.getAllUsers = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.updateUser = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Users']
+  #swagger.summary = 'Update User'
+  #swagger.description = 'Update user'
+  #swagger.parameters['obj'] = {
+    in: 'body',
+    description: 'User data',
+    schema: { 
+      _id: 'userId',
+      phoneNo: 'phoneNo',
+      firstName: 'firstName',
+      lastName: 'lastName',
+      registrationNumber: 'registrationNumber',
+      sex: 'male or female',
+      club: 'clubId',
+      height: 180,
+      weight: 75,
+      birthDate: '1990-01-01',
+      imageUrl: 'imageUrl',
+    }
+  }
+  */
+
+  const {
+    _id,
+    phoneNo,
+    firstName,
+    lastName,
+    registrationNumber,
+    sex,
+    club,
+    height,
+    weight,
+    birthDate,
+    imageUrl,
+  } = req.body;
+
+  if (!_id || !phoneNo) {
+    throw new myError("ID болон утасны дугаар оруулна уу.", 400);
+  }
+
+  const user = await models.user.findById({ _id: _id }).lean();
+
+  if (!user) {
+    throw new myError("Хэрэглэгч олдсонгүй.", 404);
+  }
+
+  const registrationCheck = await models.user.findOne({
+    registrationNumber: registrationNumber,
+  });
+
+  if (registrationCheck && registrationCheck._id !== _id) {
+    throw new myError("Регистрийн дугаар давхцах боломжгүй.", 400);
+  }
+
+  await models.user.findByIdAndUpdate(_id, {
+    phoneNo,
+    firstName,
+    lastName,
+    registrationNumber,
+    sex,
+    club,
+    height,
+    weight,
+    birthDate,
+    imageUrl,
+  });
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
 exports.getAllCoaches = asyncHandler(async (req, res, next) => {
   /*
   #swagger.tags = ['Users']

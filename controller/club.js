@@ -171,6 +171,18 @@ exports.getClubList = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.getAllClubList = asyncHandler(async (req, res, next) => {
+  const clubList = await models.club
+    .find({}, { name: 1, _id: 1 })
+    .sort({ name: 1 })
+    .lean();
+
+  res.status(200).json({
+    success: true,
+    data: clubList,
+  });
+});
+
 exports.updateClub = asyncHandler(async (req, res, next) => {
   const { _id, name, description, address, phone, coach, logo } = req.body;
 

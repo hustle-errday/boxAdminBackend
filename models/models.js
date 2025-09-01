@@ -10,6 +10,7 @@ module.exports = {
   invoice: require("./schema/invoice"),
   sponsor: require("./schema/sponsor"),
   ranking: require("./schema/rank"),
+  video: require("./schema/video"),
   admin: require("./schema/admin"),
   match: require("./schema/match"),
   user: require("./schema/user"),
