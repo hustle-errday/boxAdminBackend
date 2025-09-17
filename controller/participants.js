@@ -265,18 +265,19 @@ exports.rejectParticipant = asyncHandler(async (req, res, next) => {
     throw new myError("Тамирчин олдсонгүй.", 400);
   }
 
-  if (!description) {
-    await models.participant.updateOne(
-      { _id: _id },
-      { $set: { status: "rejected" } }
-    );
+  const theCompetition = await models.competition
+    .findOne({ _id: participant.competitionId })
+    .lean();
+  if (!theCompetition) {
+    throw new myError("Тэмцээн олдсонгүй.", 400);
   }
-  if (description) {
-    await models.participant.updateOne(
-      { _id: _id },
-      { $set: { status: "rejected", reason: description } }
-    );
+
+  const now = moment().tz("Asia/Ulaanbaatar").format("YYYY-MM-DD HH:mm:ss");
+  if (now.isAfter(moment(theCompetition.startDate))) {
+    throw new myError("Тэмцээн эхлэсэн тул хасах боломжгүй.", 400);
   }
+
+  await models.participant.deleteOne({ _id: participant._id });
 
   res.status(200).json({
     success: true,

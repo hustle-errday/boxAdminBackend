@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { matching, getMatches, updateMatch } = require("../../controller/match");
+const {
+  matching,
+  getMatches,
+  updateMatch,
+  getMatchInfo,
+} = require("../../controller/match");
 const { body, query } = require("express-validator");
 const requestDataValidation = require("../../middleware/requestDataValidation");
 
@@ -19,5 +24,13 @@ router
     getMatches
   );
 router.route("/update").put(updateMatch);
+router
+  .route("/info")
+  .get(
+    query("competitionId").isMongoId().notEmpty(),
+    query("matchId").isMongoId().notEmpty(),
+    requestDataValidation,
+    getMatchInfo
+  );
 
 module.exports = router;

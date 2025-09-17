@@ -729,6 +729,90 @@
         }
       }
     },
+    "/api/user/update": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update User",
+        "description": "Update user",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "User data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "userId"
+                },
+                "phoneNo": {
+                  "type": "string",
+                  "example": "phoneNo"
+                },
+                "firstName": {
+                  "type": "string",
+                  "example": "firstName"
+                },
+                "lastName": {
+                  "type": "string",
+                  "example": "lastName"
+                },
+                "registrationNumber": {
+                  "type": "string",
+                  "example": "registrationNumber"
+                },
+                "sex": {
+                  "type": "string",
+                  "example": "male or female"
+                },
+                "club": {
+                  "type": "string",
+                  "example": "clubId"
+                },
+                "height": {
+                  "type": "number",
+                  "example": 180
+                },
+                "weight": {
+                  "type": "number",
+                  "example": 75
+                },
+                "birthDate": {
+                  "type": "string",
+                  "example": "1990-01-01"
+                },
+                "imageUrl": {
+                  "type": "string",
+                  "example": "imageUrl"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/api/fight/score": {
       "post": {
         "tags": [
@@ -1477,6 +1561,48 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/match/info": {
+      "get": {
+        "tags": [
+          "Match"
+        ],
+        "summary": "Get Match Info",
+        "description": "Get match info by competitionId and matchId",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "competitionId",
+            "competitionId": "60f4f2c4a4c6b80015f6f5a9",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "matchId",
+            "matchId": "60f4f2c4a4c6b80015f6f5a9",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"

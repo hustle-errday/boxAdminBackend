@@ -410,3 +410,119 @@ exports.updateMatch = asyncHandler(async (req, res, next) => {
     data: "Оноолт амжилттай шинэчлэгдлээ.",
   });
 });
+
+exports.getMatchInfo = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Match']
+  #swagger.summary = 'Get Match Info'
+  #swagger.description = 'Get match info by competitionId and matchId'
+  #swagger.parameters['competitionId'] = { competitionId: '60f4f2c4a4c6b80015f6f5a9' }
+  #swagger.parameters['matchId'] = { matchId: '60f4f2c4a4c6b80015f6f5a9' }
+  */
+
+  const { competitionId, matchId } = req.query;
+
+  const theCompetition = await models.competition
+    .findById({ _id: competitionId })
+    .lean();
+  if (!theCompetition) {
+    throw new myError("Тэмцээн олдсонгүй", 400);
+  }
+
+  const theMatch = await models.match
+    .findById({ _id: matchId })
+    .populate("categoryId", "name")
+    .populate({
+      path: "playerOne",
+      populate: {
+        path: "userId",
+        model: "user",
+      },
+    })
+    .populate({
+      path: "playerTwo",
+      populate: {
+        path: "userId",
+        model: "user",
+      },
+    })
+    .lean();
+  if (!theMatch) {
+    throw new myError("Оноолт олдсонгүй", 400);
+  }
+
+  const maxRound = Math.max(theMatch.round);
+
+  const round =
+    theMatch.round === maxRound ? "Final" : `Round ${theMatch.round}`;
+
+  let playerOneClub = null;
+  let playerTwoClub = null;
+
+  if (theMatch.playerOne?.userId?.club) {
+    const theClub = await models.club
+      .findById({ _id: theMatch.playerOne.userId.club })
+      .lean();
+    playerOneClub = theClub
+      ? { _id: theClub._id, name: theClub.name, logo: theClub.logo ?? "" }
+      : null;
+  }
+  if (theMatch.playerTwo?.userId?.club) {
+    const theClub = await models.club
+      .findById({ _id: theMatch.playerTwo.userId.club })
+      .lean();
+    playerTwoClub = theClub
+      ? { _id: theClub._id, name: theClub.name, logo: theClub.logo ?? "" }
+      : null;
+  }
+
+  const playerOne = theMatch.playerOne
+    ? {
+        _id: theMatch.playerOne._id,
+        firstName: theMatch.playerOne.userId.firstName,
+        lastName: theMatch.playerOne.userId.lastName,
+        imageUrl: theMatch.playerOne.userId.imageUrl ?? "",
+        club: playerOneClub,
+      }
+    : null;
+  const playerTwo = theMatch.playerTwo
+    ? {
+        _id: theMatch.playerTwo._id,
+        firstName: theMatch.playerTwo.userId.firstName,
+        lastName: theMatch.playerTwo.userId.lastName,
+        imageUrl: theMatch.playerTwo.userId.imageUrl ?? "",
+        club: playerTwoClub,
+      }
+    : null;
+
+  if (theMatch.score) {
+    for (const key of Object.keys(theMatch.score)) {
+      if (key.toString() === theMatch.playerOne?._id?.toString()) {
+        theMatch.score.playerOne = theMatch.score[key];
+        delete theMatch.score[key];
+      }
+      if (key.toString() === theMatch.playerTwo?._id?.toString()) {
+        theMatch.score.playerTwo = theMatch.score[key];
+        delete theMatch.score[key];
+      }
+    }
+  }
+
+  const data = {
+    category: { _id: theMatch.categoryId._id, name: theMatch.categoryId.name },
+    round,
+    match: {
+      _id: theMatch._id,
+      match: theMatch.matchNumber.toString(),
+      players: [playerOne, playerTwo],
+      score: theMatch.score ?? "",
+      winner: theMatch.winner ?? "",
+      matchDateTime: theMatch.matchDateTime ?? "",
+    },
+  };
+
+  res.status(200).json({
+    success: true,
+    data: data,
+  });
+});

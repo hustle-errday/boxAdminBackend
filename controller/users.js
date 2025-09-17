@@ -1,4 +1,5 @@
 const asyncHandler = require("../middleware/asyncHandler");
+const myError = require("../utility/myError");
 const models = require("../models/models");
 const jwt = require("jsonwebtoken");
 
@@ -116,7 +117,10 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     registrationNumber: registrationNumber,
   });
 
-  if (registrationCheck && registrationCheck._id !== _id) {
+  if (
+    registrationCheck &&
+    registrationCheck.registrationNumber !== registrationNumber
+  ) {
     throw new myError("Регистрийн дугаар давхцах боломжгүй.", 400);
   }
 
