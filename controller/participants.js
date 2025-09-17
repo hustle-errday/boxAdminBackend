@@ -272,7 +272,7 @@ exports.rejectParticipant = asyncHandler(async (req, res, next) => {
     throw new myError("Тэмцээн олдсонгүй.", 400);
   }
 
-  const now = moment().tz("Asia/Ulaanbaatar").format("YYYY-MM-DD HH:mm:ss");
+  const now = moment().tz("Asia/Ulaanbaatar");
   if (now.isAfter(moment(theCompetition.startDate))) {
     throw new myError("Тэмцээн эхлэсэн тул хасах боломжгүй.", 400);
   }
