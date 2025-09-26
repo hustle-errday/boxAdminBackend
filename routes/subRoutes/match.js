@@ -5,6 +5,7 @@ const {
   getMatches,
   updateMatch,
   getMatchInfo,
+  deleteMatch,
 } = require("../../controller/match");
 const { body, query } = require("express-validator");
 const requestDataValidation = require("../../middleware/requestDataValidation");
@@ -31,6 +32,13 @@ router
     query("matchId").isMongoId().notEmpty(),
     requestDataValidation,
     getMatchInfo
+  );
+router
+  .route("/delete")
+  .delete(
+    body("competitionId").isString().notEmpty(),
+    requestDataValidation,
+    deleteMatch
   );
 
 module.exports = router;

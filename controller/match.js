@@ -526,3 +526,46 @@ exports.getMatchInfo = asyncHandler(async (req, res, next) => {
     data: data,
   });
 });
+
+exports.deleteMatch = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Match'] 
+  #swagger.summary = 'Delete match'
+  #swagger.description = 'Delete match'
+  #swagger.parameters['body'] = { 
+    in: 'body',
+    description: 'Matching data',
+    required: true,
+    schema: {
+      competitionId: '60f4f2c4a4c6b80015f6f5a9' 
+    }
+  }
+  */
+
+  const { competitionId } = req.body;
+
+  const now = moment().tz("Asia/Ulaanbaatar").format("YYYY-MM-DD HH:mm:ss");
+  const theCompetition = await models.competition
+    .findById({ _id: competitionId })
+    .lean();
+
+  if (!theCompetition) {
+    throw new myError("Тэмцээн олдсонгүй.", 400);
+  }
+  if (moment(theCompetition.startDate).isBefore(now)) {
+    throw new myError("Тэмцээн эхлэсэн байна.", 400);
+  }
+
+  const matchCheck = await models.match.findOne({
+    competitionId: competitionId,
+  });
+  if (!matchCheck) {
+    throw new myError("Тэмцээний оноолт гаргаагүй байна.", 400);
+  }
+
+  await models.match.deleteMany({ competitionId: competitionId });
+
+  res.status(200).json({
+    success: true,
+  });
+});

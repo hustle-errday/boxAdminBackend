@@ -944,6 +944,92 @@
         }
       }
     },
+    "/api/fight/update": {
+      "post": {
+        "tags": [
+          "Fight"
+        ],
+        "summary": "Update Match",
+        "description": "Update Match",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Update Match data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "matchId": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                },
+                "round": {
+                  "type": "number",
+                  "example": 1
+                },
+                "playerOne": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "60f4f2c4a4c6b80015f6f5a9"
+                    },
+                    "score": {
+                      "type": "string",
+                      "example": "10 or K.O"
+                    }
+                  }
+                },
+                "playerTwo": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "60f4f2c4a4c6b80015f6f5a9"
+                    },
+                    "score": {
+                      "type": "string",
+                      "example": "9 or 0"
+                    }
+                  }
+                },
+                "description": {
+                  "type": "array",
+                  "example": [
+                    "description",
+                    "description",
+                    "description"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/api/image/upload": {
       "post": {
         "tags": [
@@ -1595,6 +1681,51 @@
             "matchId": "60f4f2c4a4c6b80015f6f5a9",
             "in": "query",
             "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/match/delete": {
+      "delete": {
+        "tags": [
+          "Match"
+        ],
+        "summary": "Delete match",
+        "description": "Delete match",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "access token",
+            "required": true,
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMiIsInJvbGUiOiJvd25lciIsInVzZXJuYW1lIjoiOTQyODgwMDgiLCJvcmdhbml6YXRpb25JZCI6IjY3OTcxZGM3MDc3NTg2YmRhMjUyMWMwMCIsImlhdCI6MTczNzk3NDg5MCwiZXhwIjoxNzM5MjcwODkwfQ.lQb4MH9jWY2-wzKCDgzWclUWKuipFFQm5E9sLmgY7T8",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Matching data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "competitionId": {
+                  "type": "string",
+                  "example": "60f4f2c4a4c6b80015f6f5a9"
+                }
+              }
+            }
           }
         ],
         "responses": {
