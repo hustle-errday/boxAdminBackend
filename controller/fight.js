@@ -137,7 +137,14 @@ exports.giveScore = asyncHandler(async (req, res, next) => {
 
       // ranking section
       if (match.competitionId.rankAffect) {
-        await trackScoreUpdate(match, winner);
+        const theParticipant = await models.participant
+          .findOne({
+            _id: winner,
+            competitionId: match.competitionId,
+          })
+          .lean();
+
+        await trackScoreUpdate(match, theParticipant.userId);
       }
     }
 

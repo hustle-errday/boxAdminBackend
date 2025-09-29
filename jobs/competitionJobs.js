@@ -6,7 +6,9 @@ const byeParticipantNextRound = () => {
   cron.schedule("0 */1 * * *", async () => {
     console.log("byeParticipantNextRound job started");
 
-    const currentDate = moment().tz("Asia/Ulaanbaatar");
+    const currentDate = moment()
+      .format("YYYY-MM-DD HH:mm:ss")
+      .tz("Asia/Ulaanbaatar");
 
     const competitions = await models.competition.find({}).lean();
 
