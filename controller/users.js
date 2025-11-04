@@ -269,3 +269,77 @@ exports.getAllAthletes = asyncHandler(async (req, res, next) => {
     currentPage: pageNumber,
   });
 });
+
+exports.addPersonalVideo = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Users']
+  #swagger.summary = 'Add Personal Video'
+  #swagger.description = 'Add a personal video for the user'
+  #swagger.parameters['obj'] = {
+    in: 'body',
+    description: 'Personal video data',
+    schema: { 
+      _id: 'userId',
+      videoUrl: 'Video URL',
+    }
+  }
+  */
+
+  const { _id, videoUrl } = req.body;
+
+  const user = await models.user.findById({ _id: _id }).lean();
+
+  if (!user) {
+    throw new myError("Хэрэглэгч олдсонгүй.", 404);
+  }
+
+  // check duplicate video
+  if (user.personalVideos && user.personalVideos.includes(videoUrl)) {
+    throw new myError("Видео аль хэдийн нэмэгдсэн байна.", 400);
+  }
+
+  await models.user.findByIdAndUpdate(_id, {
+    $push: { personalVideos: videoUrl },
+  });
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
+exports.deletePersonalVideo = asyncHandler(async (req, res, next) => {
+  /*
+  #swagger.tags = ['Users']
+  #swagger.summary = 'Delete Personal Video'
+  #swagger.description = 'Delete a personal video for the user'
+  #swagger.parameters['obj'] = {
+    in: 'body',
+    description: 'Personal video data',
+    schema: {
+      _id: 'userId',
+      videoUrl: 'Video URL',
+    }
+  }
+  */
+
+  const { _id, videoUrl } = req.body;
+
+  const user = await models.user.findById({ _id: _id }).lean();
+
+  if (!user) {
+    throw new myError("Хэрэглэгч олдсонгүй.", 404);
+  }
+
+  // check if video exists
+  if (!user.personalVideos || !user.personalVideos.includes(videoUrl)) {
+    throw new myError("Видео олдсонгүй.", 400);
+  }
+
+  await models.user.findByIdAndUpdate(_id, {
+    $pull: { personalVideos: videoUrl },
+  });
+
+  res.status(200).json({
+    success: true,
+  });
+});

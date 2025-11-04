@@ -5,6 +5,8 @@ const {
   getAllCoaches,
   getAllUsers,
   updateUser,
+  addPersonalVideo,
+  deletePersonalVideo,
 } = require("../../controller/users");
 const { body, query } = require("express-validator");
 const requestDataValidation = require("../../middleware/requestDataValidation");
@@ -49,6 +51,20 @@ router
     body("imageUrl").isString().optional(),
     requestDataValidation,
     updateUser
+  );
+router
+  .route("/video")
+  .put(
+    body("_id").isMongoId().notEmpty(),
+    body("videoUrl").isString().notEmpty(),
+    requestDataValidation,
+    addPersonalVideo
+  )
+  .delete(
+    body("_id").isMongoId().notEmpty(),
+    body("videoUrl").isString().notEmpty(),
+    requestDataValidation,
+    deletePersonalVideo
   );
 
 module.exports = router;

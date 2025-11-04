@@ -29,6 +29,9 @@ const clubSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  clubVideos: {
+    type: Object,
+  },
   createdBy: {
     type: mongoose.Schema.ObjectId,
     ref: "admin",

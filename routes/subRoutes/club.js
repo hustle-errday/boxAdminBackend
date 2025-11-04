@@ -8,6 +8,8 @@ const {
   getAllClubList,
   updateClub,
   deleteClub,
+  addClubVideo,
+  deleteClubVideo,
 } = require("../../controller/club");
 const { body, query } = require("express-validator");
 const requestDataValidation = require("../../middleware/requestDataValidation");
@@ -140,5 +142,45 @@ router.route("/update").put(
 router
   .route("/delete")
   .delete(body("_id").isString().notEmpty(), requestDataValidation, deleteClub);
+router
+  .route("/video")
+  .put(
+    /*
+    #swagger.tags = ['Club']
+    #swagger.summary = 'Add Club Video'
+    #swagger.description = 'Add club video'
+    #swagger.parameters['obj'] = {
+      in: 'body',
+      description: 'Club video data',
+      schema: { 
+        _id: 'club_id',
+        videoUrl: 'videoUrl',
+      }
+    }
+    */
+    body("_id").isString().notEmpty(),
+    body("videoUrl").isString().notEmpty(),
+    requestDataValidation,
+    addClubVideo
+  )
+  .delete(
+    /*
+    #swagger.tags = ['Club']
+    #swagger.summary = 'Delete Club Video'
+    #swagger.description = 'Delete club video'
+    #swagger.parameters['obj'] = {
+      in: 'body',
+      description: 'Club video data',
+      schema: { 
+        _id: 'club_id',
+        videoUrl: 'videoUrl',
+      }
+    }
+    */
+    body("_id").isString().notEmpty(),
+    body("videoUrl").isString().notEmpty(),
+    requestDataValidation,
+    deleteClubVideo
+  );
 
 module.exports = router;

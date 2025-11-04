@@ -230,3 +230,51 @@ exports.deleteClub = asyncHandler(async (req, res, next) => {
     data: "not ready",
   });
 });
+
+exports.addClubVideo = asyncHandler(async (req, res, next) => {
+  const { _id, videoUrl } = req.body;
+
+  const theClub = await models.club.findOne({ _id: _id });
+  if (!theClub) {
+    throw new myError("Клубын мэдээлэл олдсонгүй.", 400);
+  }
+
+  // check if video already exists
+  if (theClub.clubVideos && theClub.clubVideos.includes(videoUrl)) {
+    throw new myError("Видео аль хэдийн клубт нэмэгдсэн байна.", 400);
+  }
+
+  // add video to club
+  await models.club.updateOne(
+    { _id: _id },
+    { $addToSet: { clubVideos: videoUrl } }
+  );
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
+exports.deleteClubVideo = asyncHandler(async (req, res, next) => {
+  const { _id, videoUrl } = req.body;
+
+  const theClub = await models.club.findOne({ _id: _id });
+  if (!theClub) {
+    throw new myError("Клубын мэдээлэл олдсонгүй.", 400);
+  }
+
+  // check if video exists
+  if (!theClub.clubVideos || !theClub.clubVideos.includes(videoUrl)) {
+    throw new myError("Видео клубт байхгүй байна.", 400);
+  }
+
+  // remove video from club
+  await models.club.updateOne(
+    { _id: _id },
+    { $pull: { clubVideos: videoUrl } }
+  );
+
+  res.status(200).json({
+    success: true,
+  });
+});
